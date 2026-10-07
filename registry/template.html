@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@@TITLE@@</title>
+    <style>
+        :root { color-scheme: dark; }
+        body {
+            margin: 0;
+            padding: 1.5rem;
+            background: #000;
+            color: #bfbfbf;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .crumbs {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            max-width: 52rem;
+            margin: 0 0 1rem;
+            padding: 0 0 0.75rem;
+            list-style: none;
+            font-size: 1.75rem;
+            font-weight: 500;
+            line-height: 1.2;
+            border-bottom: 1px solid #40494b;
+        }
+        .crumb { display: inline-flex; align-items: center; color: #d4dbdd; }
+        .crumb + .crumb { padding-left: 0.5rem; }
+        .crumb + .crumb::before {
+            content: "/";
+            padding-right: 0.5rem;
+            color: #81949c;
+            font-weight: 400;
+        }
+        .crumb a { color: #d4dbdd; text-decoration: none; }
+        .crumb a:hover { color: #f8f8f8; }
+        .crumb.current { color: #f8f8f8; }
+        .home-icon { width: 1.15em; height: 1.15em; display: block; fill: currentColor; }
+        .clip {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .table-wrap {
+            max-width: 52rem;
+            overflow: auto;
+            border: 1px solid #40494b;
+            border-radius: 0.75rem;
+        }
+        .files {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .files th,
+        .files td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .files th {
+            color: #f8f8f8;
+            font-weight: 600;
+            background: #121617;
+            border-bottom: 1px solid #5b686b;
+        }
+        .files tbody tr:nth-child(odd) { background: #1c2426; }
+        .files tbody tr:nth-child(even) { background: #2a3336; }
+        .files tbody tr:hover { background: #343e41; }
+        .files .size,
+        .files .modified {
+            text-align: right;
+            white-space: nowrap;
+            color: #81949c;
+            font-variant-numeric: tabular-nums;
+        }
+        .files th.size,
+        .files th.modified,
+        .files th.download { color: #f8f8f8; }
+        .files .download { width: 1%; text-align: center; white-space: nowrap; }
+        .download a {
+            display: inline-flex;
+            color: #d4dbdd;
+            text-decoration: none;
+        }
+        .download a:hover,
+        .download a:focus-visible { color: #f8f8f8; }
+        .download-icon { width: 1.25rem; height: 1.25rem; display: block; fill: currentColor; }
+        .file {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 12rem;
+        }
+        .opa { width: 2rem; height: 2rem; flex: none; }
+        .file a {
+            color: #d4dbdd;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+        }
+        .file a:hover,
+        .file a:focus-visible { color: #f8f8f8; }
+        @media (max-width: 40rem) {
+            .crumbs { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav aria-label="Breadcrumb">
+        <ol class="crumbs">
+@@CRUMBS@@
+        </ol>
+    </nav>
+    <div class="table-wrap">
+        <table class="files">
+            <thead>
+                <tr>
+                    <th class="name">Name</th>
+                    <th class="size">Size</th>
+                    <th class="modified">Last Modified</th>
+                    <th class="download">Download</th>
+                </tr>
+            </thead>
+            <tbody>
+@@ROWS@@
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.querySelectorAll("time.local").forEach((node) => {
+            const date = new Date(node.dateTime);
+            if (Number.isNaN(date.getTime())) return;
+            node.textContent = date.toLocaleString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+            });
+        });
+    </script>
+</body>
+</html>

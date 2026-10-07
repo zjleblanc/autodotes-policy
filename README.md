@@ -65,6 +65,14 @@ autodotes-policy/
 │       ├── certificate.yaml           # cert-manager Certificate resource
 │       └── kustomization.yaml         # Namespace, resources, ConfigMap generator
 │
+├── registry/                          # Pages index generator assets
+│   ├── generate_index.py              # Builds index.html files for GitHub Pages
+│   ├── template.html                  # HTML template for the bundle listing page
+│   └── assets/
+│       ├── opa-icon.png               # OPA icon used in the bundle listing
+│       ├── home-icon.svg              # Breadcrumb home icon (inlined into HTML)
+│       └── download-icon.svg          # Download icon (inlined into HTML)
+│
 └── .github/
     └── workflows/
         └── bundle.yaml                # CI: build & publish all bundles to Pages

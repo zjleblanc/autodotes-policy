@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-06 — Extract the Pages index generator into `registry/`
+
+### Added
+- A `registry/` directory with `generate_index.py`, `template.html`, and an `assets/` folder holding the OPA icon and the home/download icons as standalone PNG/SVG files, replacing a ~260-line inline Python heredoc in the bundle workflow.
+
+### Changed
+- The bundle workflow's "Write Pages index" step now just runs `python3 registry/generate_index.py`, and the push trigger also watches `registry/**`.
+- README documents the new `registry/` layout.
+
 ## 2026-10-06 — Add pre-commit hooks and CI Rego linting
 
 ### Added
