@@ -1,0 +1,26 @@
+services:
+  github-pages:
+    url: https://zjleblanc.github.io/autodotes-policy
+
+bundles:
+  autodotes_policy:
+    service: github-pages
+    resource: bundles/autodotes_policy.bundle.tar.gz
+    polling:
+      min_delay_seconds: 30
+      max_delay_seconds: 60
+
+keys:
+  aap:
+    key: |
+      -----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtzGvEB7jJqGq5JpJll8P
+RbsDkP4qTdw0LxxnDe07GJLolknqgfewcQuLtYXI0w2yjsRfRQn/RyuRmLDBXikJ
+SMlngZ/jbjwfTUoraX21sFHJkL3ZWANFtPlhyq4AM+qPBxbtpSo9BBIhJxBcz3XL
+Jqs5TrThyw7WlV2sif5OcEtmyWUcf3Dxx1Ml74z24hCYj4ohO8dMAd5cG6QCICR4
+ByB95fGHFVK+SwRUXxdZuw8wKPYFDWb1qqnkBc1F5Z5LrIZNsLvG6dRL9cw27oKD
+vKQae+bA/9vtRjasnr/1ITNPXIWlO42WYZZxD+7BdamegyrHMPHKy0UNmCYATxkC
+lQIDAQAB
+-----END PUBLIC KEY-----
+
+    algorithm: RS256
