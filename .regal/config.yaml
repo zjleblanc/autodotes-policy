@@ -19,3 +19,13 @@
 #         - pattern: '^autodotes_policy[a-z_.]*$'
 #           targets:
 #             - package
+
+rules:
+  imports:
+    unresolved-reference:
+      # `payloads` is example-payload data loaded from tests/data/ for unit
+      # tests (see policies/autodotes_policy/*_test.rego). Regal only lints
+      # the policies/ directory and does not scan data files, so references
+      # to this path are expected to be "unresolved" from its point of view.
+      except-paths:
+        - data.autodotes_policy.payloads.**

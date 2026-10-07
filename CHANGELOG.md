@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-06 — Add OPA unit tests and Ansible Automation Platform integration docs
+
+### Added
+- OPA unit tests (`*_test.rego`) for all three policies, backed by full-schema example payloads under `tests/data/autodotes_policy/payloads/` that mirror the real Ansible Automation Platform (AAP) policy-enforcement input.
+- `tests/README.md` documenting the test data layout, how to run and filter tests, and how to contribute new test cases.
+- An `opa-test` pre-commit hook and a "Run unit tests" CI step, so a failing test blocks both local commits and the bundle build.
+- README `Testing` and `Integrations` (Ansible Automation Platform) sections, including the AAP input/output payload schema and links to the official Red Hat docs.
+
+### Changed
+- The bundle workflow's build step now passes `--ignore '*_test.rego'` to `opa build` so test files never ship in production bundles, and its push trigger now also watches `tests/**`.
+- `.regal/config.yaml` excepts `data.autodotes_policy.payloads.**` from the `unresolved-reference` rule, since Regal doesn't resolve data-file references.
+
 ## 2026-10-06 — Extract the Pages index generator into `registry/`
 
 ### Added

@@ -4,8 +4,9 @@
 # Setup (one-time, per clone):
 #   pip install pre-commit && pre-commit install
 #
-# `opa-check` and `opa-fmt` below run the local `opa` CLI, so make sure it's
-# installed and on PATH: https://www.openpolicyagent.org/docs/latest/#running-opa
+# `opa-check`, `opa-fmt`, and `opa-test` below run the local `opa` CLI, so
+# make sure it's installed and on PATH:
+# https://www.openpolicyagent.org/docs/latest/#running-opa
 
 repos:
   # Generic file hygiene
@@ -47,3 +48,11 @@ repos:
         entry: opa fmt --fail --list
         language: system
         files: \.rego$
+
+      - id: opa-test
+        name: opa test
+        description: Run OPA unit tests against example payloads (see tests/)
+        entry: opa test policies/ tests/data/ -v
+        language: system
+        files: ^(policies/.*\.rego|tests/data/.*\.json)$
+        pass_filenames: false

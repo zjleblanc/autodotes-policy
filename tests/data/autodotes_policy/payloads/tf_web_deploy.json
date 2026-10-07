@@ -1,0 +1,317 @@
+{
+  "tf_web_deploy": {
+    "valid": {
+      "id": 101,
+      "name": "Terraform Web Deploy",
+      "created": "2026-01-15T14:22:03.000000Z",
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "is_superuser": true,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 3,
+          "name": "Azure Service Principal",
+          "description": "",
+          "organization": null,
+          "credential_type": 5,
+          "managed": false,
+          "kind": "cloud",
+          "cloud": true,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "az_ssh_pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC example-key",
+        "az_web_vm_size": "Standard_DS1_v2"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 1,
+        "jobs_total": 38,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "Web Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 1,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 7,
+        "name": "Terraform Web Deploy",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [
+        {
+          "id": 1,
+          "name": "terraform",
+          "organization": {
+            "id": 1,
+            "name": "Default"
+          }
+        }
+      ],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 1,
+        "name": "admin",
+        "type": "user",
+        "url": "/api/v2/users/1/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "deploy_web.yml",
+      "project": {
+        "id": 6,
+        "name": "Terraform Web Project",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/terraform-web-deploy",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "invalid_key": {
+      "id": 102,
+      "name": "Terraform Web Deploy",
+      "created": "2026-01-15T14:30:11.000000Z",
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "is_superuser": true,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 3,
+          "name": "Azure Service Principal",
+          "description": "",
+          "organization": null,
+          "credential_type": 5,
+          "managed": false,
+          "kind": "cloud",
+          "cloud": true,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "az_ssh_pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC example-key",
+        "az_web_vm_size": "Standard_DS1_v2",
+        "unauthorized_key": "some-value"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 1,
+        "jobs_total": 38,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "Web Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 1,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 7,
+        "name": "Terraform Web Deploy",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [
+        {
+          "id": 1,
+          "name": "terraform",
+          "organization": {
+            "id": 1,
+            "name": "Default"
+          }
+        }
+      ],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 1,
+        "name": "admin",
+        "type": "user",
+        "url": "/api/v2/users/1/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "deploy_web.yml",
+      "project": {
+        "id": 6,
+        "name": "Terraform Web Project",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/terraform-web-deploy",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "invalid_value": {
+      "id": 103,
+      "name": "Terraform Web Deploy",
+      "created": "2026-01-15T14:35:47.000000Z",
+      "created_by": {
+        "id": 1,
+        "username": "admin",
+        "is_superuser": true,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 3,
+          "name": "Azure Service Principal",
+          "description": "",
+          "organization": null,
+          "credential_type": 5,
+          "managed": false,
+          "kind": "cloud",
+          "cloud": true,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "az_ssh_pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC example-key",
+        "az_web_vm_size": "Standard_DS99_v9"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 1,
+        "jobs_total": 38,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "Web Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 1,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 7,
+        "name": "Terraform Web Deploy",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [
+        {
+          "id": 1,
+          "name": "terraform",
+          "organization": {
+            "id": 1,
+            "name": "Default"
+          }
+        }
+      ],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 1,
+        "name": "admin",
+        "type": "user",
+        "url": "/api/v2/users/1/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "deploy_web.yml",
+      "project": {
+        "id": 6,
+        "name": "Terraform Web Project",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/terraform-web-deploy",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    }
+  }
+}

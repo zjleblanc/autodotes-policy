@@ -7,6 +7,7 @@ on:
     paths:
       - "policies/**"
       - "registry/**"
+      - "tests/**"
       - ".github/workflows/bundle.yaml"
   workflow_dispatch: {}
 
@@ -43,6 +44,9 @@ jobs:
 
       - name: Lint Rego policies (regal)
         run: regal lint --format github policies/
+
+      - name: Run unit tests (opa test)
+        run: opa test policies/ tests/data/ -v
 
       - name: Detect changed policy directories
         id: changes
@@ -89,14 +93,14 @@ jobs:
 
             if [ "${REBUILD_ALL}" = "true" ] || grep -qw "${name}" <<< "${CHANGED_DIRS}"; then
               echo "Building bundle '${name}' from ${dir} -> ${out} (changed)"
-              opa build -b "${dir}" -o "${out}"
+              opa build -b "${dir}" --ignore '*_test.rego' -o "${out}"
             else
               echo "Fetching existing bundle '${name}' from Pages (unchanged)"
               if curl -fsSL -R "${PAGES_BASE}/bundles/${name}.bundle.tar.gz" -o "${out}"; then
                 echo "  -> reused existing bundle for '${name}'"
               else
                 echo "  -> fetch failed for '${name}', building from source"
-                opa build -b "${dir}" -o "${out}"
+                opa build -b "${dir}" --ignore '*_test.rego' -o "${out}"
               fi
             fi
           done
