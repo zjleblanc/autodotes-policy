@@ -1,9 +1,10 @@
 # Changelog
 
-## 2026-10-07 — Fix OPA health checks by allowing unauthenticated /health access
+## 2026-10-07 — Fix OPA health checks and multiline key formatting
 
 ### Fixed
-- `k8s/base/rego/system/authz.rego`: updated the OPA server authorization policy to explicitly allow unauthenticated `GET /health` requests and simplified the `authz` rule to return a boolean, resolving `500 Internal Server Error` responses to Kubernetes liveness/readiness probes when `--authorization=basic` is enabled.
+- `k8s/base/rego/system/authz.rego`: updated the OPA server authorization policy to explicitly allow unauthenticated `GET /health` requests, simplified the `authz` rule to return a boolean, and added robust path checking to prevent potential runtime errors during evaluation.
+- `k8s/base/external-secret.yaml`: fixed RSA public key templating by using a block scalar and `indent` function, ensuring multiline PEM keys are correctly formatted in the generated `opa-config` Secret. This resolves `500 Internal Server Error` responses when OPA attempts to load an invalid key or fails to authorize liveness/readiness probes.
 
 ## 2026-10-07 — Fix Kustomize ComparisonError for OPA authz policy
 

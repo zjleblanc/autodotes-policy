@@ -28,6 +28,7 @@ authz := true if {
 	input.identity
 	input.method == "POST"
 	input.path[0] == "v1"
+	count(input.path) >= 2
 	input.path[1] == "data"
 }
 
