@@ -1,0 +1,69 @@
+name: Build and Publish OPA Bundle
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "policies/**"
+      - ".github/workflows/bundle.yaml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+
+      - name: Build bundles
+        run: |
+          set -euo pipefail
+          mkdir -p _site/bundles
+
+          shopt -s nullglob
+          dirs=(policies/*/)
+          if [ ${#dirs[@]} -eq 0 ]; then
+            echo "No policy directories found under policies/" >&2
+            exit 1
+          fi
+
+          for dir in "${dirs[@]}"; do
+            name="$(basename "${dir%/}")"
+            out="_site/bundles/${name}.bundle.tar.gz"
+            echo "Building bundle '${name}' from ${dir} -> ${out}"
+            opa build -b "${dir}" -o "${out}"
+          done
+
+          echo "Built bundles:"
+          ls -la _site/bundles
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

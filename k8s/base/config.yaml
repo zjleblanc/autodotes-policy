@@ -1,0 +1,11 @@
+services:
+  github-pages:
+    url: https://zjleblanc.github.io/autodotes-policy
+
+bundles:
+  autodotes_policy:
+    service: github-pages
+    resource: bundles/autodotes_policy.bundle.tar.gz
+    polling:
+      min_delay_seconds: 30
+      max_delay_seconds: 60
