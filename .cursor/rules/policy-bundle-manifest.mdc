@@ -1,0 +1,40 @@
+---
+description: Require a .manifest with scoped roots for every policy bundle directory under policies/
+globs: policies/**
+alwaysApply: false
+---
+
+# Policy Bundle Manifests
+
+Every subdirectory directly under `policies/` is built into an independent
+OPA bundle by `.github/workflows/bundle.yaml` (`opa build -b policies/<dir>`).
+
+**When creating a new subdirectory under `policies/`** (a new policy
+package), you MUST also add a `<dir>/.manifest` file declaring `roots`
+scoped to that package's `package` name(s), e.g.:
+
+```json
+{
+  "roots": ["my_new_policy"]
+}
+```
+
+- `roots` must match the Rego `package` name(s) used by the non-test files
+  in that directory (check with `rg '^package ' policies/<dir>/*.rego`,
+  excluding `*_test.rego` files).
+- Do this immediately when scaffolding the directory, not as an
+  afterthought — don't wait to be asked.
+
+## Why this matters
+
+Without a `.manifest`, `opa build` defaults to `"roots": [""]`, meaning the
+bundle claims the entire data document. On every bundle activation, OPA
+erases all data under those roots that isn't part of the bundle — including
+unrelated locally-mounted policies like `k8s/base/rego/system/authz.rego`
+(package `system`).
+
+This exact gap caused a production incident: the `autodotes_policy` bundle
+had no `.manifest`, so each bundle activation wiped `data.system.authz`,
+making every OPA request (including `/health` liveness/readiness probes)
+return `500 authorization policy missing or undefined` and crash-loop the
+pod. See `policies/autodotes_policy/.manifest` for the reference fix.

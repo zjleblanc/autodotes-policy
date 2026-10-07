@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-07 — Scope OPA bundles and fix deployment spec
+
+### Added
+- `policies/autodotes_policy/.manifest`: scopes the `autodotes_policy` bundle to its own root, preventing it from clobbering the `system.authz` policy and causing `500 Internal Server Error` on health checks.
+- `.cursor/rules/policy-bundle-manifest.mdc`: a new Cursor rule ensuring all future policy directories include a `.manifest` to prevent root-clobbering bugs.
+
+### Fixed
+- `k8s/base/deployment.yaml`: moved `revisionHistoryLimit` to the correct `spec.revisionHistoryLimit` location.
+
 ## 2026-10-07 — Fix OPA health checks and structured authz response
 
 ### Fixed
