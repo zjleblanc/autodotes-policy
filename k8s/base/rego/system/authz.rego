@@ -14,17 +14,17 @@ import rego.v1
 # Kubernetes liveness/readiness probes are unaffected.
 # -----------------------------------------------------------------------------
 
-default authz := false
+default authz := {"allow": false}
 
 # Allow health checks without authentication.
-authz := true if {
+authz := {"allow": true} if {
 	input.method == "GET"
 	input.path == ["health"]
 }
 
 # Allow policy evaluation calls (POST /v1/data/...) for authenticated callers.
 # This is the only endpoint integrations need to query policy decisions.
-authz := true if {
+authz := {"allow": true} if {
 	input.identity
 	input.method == "POST"
 	input.path[0] == "v1"
@@ -34,7 +34,7 @@ authz := true if {
 
 # Allow bundle/policy status checks (GET /v1/status) for authenticated
 # monitoring clients.
-authz := true if {
+authz := {"allow": true} if {
 	input.identity
 	input.method == "GET"
 	input.path == ["v1", "status"]
