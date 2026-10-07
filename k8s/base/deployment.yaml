@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: opa
-          image: openpolicyagent/opa:latest
+          image: docker.io/openpolicyagent/opa:latest
           args:
             - "run"
             - "--server"
