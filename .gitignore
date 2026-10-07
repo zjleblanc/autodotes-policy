@@ -3,3 +3,9 @@
 *~
 .vscode/
 .idea/
+
+# Key material (e.g. the OPA bearer-token RSA pair from docs/opa-authentication.md).
+# Private/public keys must live only in Vault, never in this repo or its history.
+*.pem
+*.key
+*.pub

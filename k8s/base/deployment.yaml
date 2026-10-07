@@ -28,6 +28,9 @@ spec:
             - "/certs/tls.key"
             - "--config-file"
             - "/etc/opa/config.yaml"
+            - "--authentication=token"
+            - "--authorization=basic"
+            - "/etc/opa/authz/"
           ports:
             - name: https
               containerPort: 8443
@@ -38,6 +41,9 @@ spec:
               readOnly: true
             - name: tls
               mountPath: /certs
+              readOnly: true
+            - name: authz
+              mountPath: /etc/opa/authz
               readOnly: true
           livenessProbe:
             httpGet:
@@ -55,8 +61,11 @@ spec:
             periodSeconds: 10
       volumes:
         - name: config
-          configMap:
-            name: opa-config
+          secret:
+            secretName: opa-config
         - name: tls
           secret:
             secretName: opa-tls
+        - name: authz
+          configMap:
+            name: opa-authz

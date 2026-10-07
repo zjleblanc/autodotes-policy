@@ -1,10 +1,10 @@
-# autodotes-policy
+# autodotes-policy 📋
 
 > GitOps-driven policy enforcement for Ansible Automation Platform, powered by Open Policy Agent.
 
 Write a Rego rule, push to `main`, and your policy is live — no manual deploys, no pod restarts.
 
-[![Build and Publish OPA Bundle](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml/badge.svg)](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml)
+![Build and Publish OPA Bundle](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml/badge.svg)
 
 ## Table of Contents
 
@@ -21,20 +21,26 @@ Write a Rego rule, push to `main`, and your policy is live — no manual deploys
 - [How to Contribute](#how-to-contribute)
 - [License](#license)
 
+
+
 ## About
 
 **autodotes-policy** is a GitOps repository that manages [Open Policy Agent](https://www.openpolicyagent.org/) (OPA) policies for the Autodotes environment. It gives you a single source of truth for all your authorization rules: policies live in this repo as human-readable [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) files, a GitHub Actions workflow automatically builds and publishes them as OPA bundles, and a running OPA server hot-reloads them — no manual steps required.
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| 🔄 **Automated bundle publishing** | GitHub Actions builds an OPA bundle for every policy folder on every push to `main` |
-| 🔥 **Hot reload** | The OPA server polls GitHub Pages on a configurable interval and reloads policies in-place — zero downtime, no pod restart |
-| 📦 **Multi-bundle support** | Each subdirectory under `policies/` becomes its own independently versioned bundle |
-| 🔒 **TLS out of the box** | The OPA server is exposed over HTTPS via cert-manager and Let's Encrypt |
-| ☸️ **Kubernetes-native** | Deployable to any Kubernetes cluster (or MicroShift) using a single Kustomize command |
-| ➕ **Extensible** | Add a new policy set by creating a new folder — the CI pipeline discovers it automatically |
+
+| Feature                            | Description                                                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 🔄 **Automated bundle publishing** | GitHub Actions builds an OPA bundle for every policy folder on every push to `main`                                        |
+| 🔥 **Hot reload**                  | The OPA server polls GitHub Pages on a configurable interval and reloads policies in-place — zero downtime, no pod restart |
+| 📦 **Multi-bundle support**        | Each subdirectory under `policies/` becomes its own independently versioned bundle                                         |
+| 🔒 **TLS out of the box**          | The OPA server is exposed over HTTPS via cert-manager and Let's Encrypt                                                    |
+| ☸️ **Kubernetes-native**           | Deployable to any Kubernetes cluster (or MicroShift) using a single Kustomize command                                      |
+| ➕ **Extensible**                   | Add a new policy set by creating a new folder — the CI pipeline discovers it automatically                                 |
+
+
+
 
 ## Architecture
 
@@ -48,7 +54,11 @@ flowchart LR
     D -->|Policy enforced| E[🛡️ Ansible / API callers]
 ```
 
+
+
 > The OPA server polls each bundle URL on an interval. When a new bundle is available it's applied instantly — **no ConfigMap changes, no rolling restarts**.
+
+
 
 ## Project Structure
 
@@ -71,8 +81,10 @@ autodotes-policy/
 │
 ├── k8s/
 │   ├── base/                          # Common manifests for the OPA server
-│   │   ├── deployment.yaml            # OPA Deployment (TLS + bundle config)
-│   │   ├── config.yaml                # Bundle sources & polling intervals
+│   │   ├── deployment.yaml            # OPA Deployment (TLS + bundle config + bearer-token auth)
+│   │   ├── config.yaml                # Reference copy of bundle sources & polling intervals
+│   │   ├── external-secret.yaml       # Pulls JWT verification key from Vault; renders opa-config Secret
+│   │   ├── authz.rego                 # system.authz policy enforced by the OPA server itself
 │   │   ├── service.yaml               # ClusterIP Service (port 8443)
 │   │   ├── certificate.yaml           # cert-manager Certificate resource
 │   │   └── kustomization.yaml         # Resources & ConfigMap generator
@@ -89,6 +101,9 @@ autodotes-policy/
 │       ├── home-icon.svg              # Breadcrumb home icon (inlined into HTML)
 │       └── download-icon.svg          # Download icon (inlined into HTML)
 │
+├── docs/
+│   └── opa-authentication.md          # Bearer token auth: PKI, Vault, OPA config, JWT minting
+│
 └── .github/
     └── workflows/
         └── bundle.yaml                # CI: build & publish all bundles to Pages
@@ -97,6 +112,8 @@ autodotes-policy/
 **Adding a new policy bundle** is as simple as creating a new subdirectory under `policies/`. The workflow discovers it automatically on the next push.
 
 ## Getting Started
+
+
 
 ### Prerequisites
 
@@ -107,6 +124,9 @@ Before deploying, make sure you have:
 - A `letsencrypt` `ClusterIssuer` that can issue certificates for `opa.autodotes.com`
 - DNS for `opa.autodotes.com` pointing at your cluster
 - GitHub Pages enabled on this repo (**Settings → Pages → Source: GitHub Actions**)
+- [external-secrets](https://external-secrets.io/latest/introduction/getting-started/) installed on the cluster, with a `ClusterSecretStore` named `vault-backend` that can read the Vault path holding the OPA JWT verification key (see [`docs/opa-authentication.md`](docs/opa-authentication.md))
+
+
 
 ### Deploy the OPA server
 
@@ -119,10 +139,14 @@ kubectl kustomize k8s/overlays/default | kubectl apply -f -
 ```
 
 This creates the `opa` namespace (as defined in the overlay) and deploys:
+
 - The OPA server `Deployment`
 - A `ClusterIP` Service on port `8443`
 - A cert-manager `Certificate` for `opa.autodotes.com`
-- The `opa-config` ConfigMap with bundle polling configuration
+- The `opa-authz` ConfigMap with the server's `system.authz` policy
+- An `ExternalSecret` that renders the `opa-config` Secret (bundle polling configuration plus the JWT verification key pulled from Vault)
+
+
 
 ### Verify it's running
 
@@ -135,6 +159,7 @@ kubectl -n opa logs deploy/opa
 ```
 
 Once the pod is `Running` and the certificate shows `Ready: True`, OPA is reachable at:
+
 - **Inside the cluster:** `https://opa.opa.svc:8443`
 - **Externally (if routed):** `https://opa.autodotes.com`
 
@@ -142,22 +167,23 @@ Confirm the policy bundle loaded by checking the logs or calling `GET /v1/status
 
 ## Configuration
 
+
+
 ### Adding a new policy bundle
 
 1. Create a new subdirectory under `policies/` — the folder name becomes the bundle name.
-
-    ```
+  ```
     policies/my_new_policy/
     └── rules.rego
-    ```
-
+  ```
 2. Push to `main`. The CI workflow builds and publishes the bundle automatically.
+3. Tell OPA to load it by adding a matching entry under `bundles:` in the config template inside `[k8s/base/external-secret.yaml](k8s/base/external-secret.yaml)` (and mirror the change in `[k8s/base/config.yaml](k8s/base/config.yaml)`, which is kept only as a non-secret reference copy — see [`docs/opa-authentication.md`](docs/opa-authentication.md)).
 
-3. Tell OPA to load it by adding a matching entry under `bundles:` in [`k8s/base/config.yaml`](k8s/base/config.yaml) (or your `default` overlay).
+
 
 ### Bundle polling interval
 
-Edit [`k8s/base/config.yaml`](k8s/base/config.yaml) to adjust how frequently OPA checks for policy updates:
+Edit the `bundles:` block inside the config template in `[k8s/base/external-secret.yaml](k8s/base/external-secret.yaml)` to adjust how frequently OPA checks for policy updates (and mirror the change in `[k8s/base/config.yaml](k8s/base/config.yaml)` for reference):
 
 ```yaml
 bundles:
@@ -167,21 +193,25 @@ bundles:
       max_delay_seconds: 120
 ```
 
+
+
 ### Updating an existing policy
 
 Simply edit the `.rego` files under `policies/<name>/` and push to `main`. No changes to `k8s/` are needed — OPA picks up the new bundle on the next poll cycle.
 
 ## Testing
 
-Every policy ships with OPA unit tests (`*_test.rego`) backed by realistic, AAP-shaped example payloads under [`tests/data/`](tests/data/). Run the full suite locally with:
+Every policy ships with OPA unit tests (`*_test.rego`) backed by realistic, AAP-shaped example payloads under `[tests/data/](tests/data/)`. Run the full suite locally with:
 
 ```sh
 opa test policies/ tests/data/ -v
 ```
 
-The same command runs automatically in CI (see [`.github/workflows/bundle.yaml`](.github/workflows/bundle.yaml)) and as a pre-commit hook, so a broken test blocks both a local commit and the bundle build. See [`tests/README.md`](tests/README.md) for the full testing guide, including the data layout and how to add new test cases.
+The same command runs automatically in CI (see `[.github/workflows/bundle.yaml](.github/workflows/bundle.yaml)`) and as a pre-commit hook, so a broken test blocks both a local commit and the bundle build. See `[tests/README.md](tests/README.md)` for the full testing guide, including the data layout and how to add new test cases.
 
 ## Integrations
+
+
 
 ### Ansible Automation Platform
 
@@ -189,23 +219,24 @@ Ansible Automation Platform (AAP) can call out to this repo's OPA bundles at job
 
 **Base input payload schema** (abridged — see the official docs linked below for every field):
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | Integer | The job's unique identifier |
-| `name` | String | Job template name |
-| `extra_vars` | JSON | Extra variables provided for job execution — the primary field this repo's policies evaluate |
-| `job_template` | Object | `id`, `name`, `job_type` of the job template |
-| `job_type` | String | `run`, `check`, or `scan` |
-| `launch_type` | String | How the job was launched (`manual`, `scheduled`, `webhook`, `workflow`, etc.) |
-| `launched_by` | Object | `id`, `name`, `type` of the user or system that launched the job |
-| `organization` | Object | `id`, `name` of the owning organization |
-| `inventory` | Object | Inventory details (`id`, `name`, `total_hosts`, etc.) |
-| `project` | Object | SCM project details (`scm_type`, `scm_url`, `scm_branch`, etc.) |
-| `credentials` | List of objects | Credentials attached to the job |
-| `execution_environment` | Object | Execution environment `id`, `name`, `image` |
 
-<details>
-<summary>Full example input payload (click to expand)</summary>
+| Field                   | Type            | Description                                                                                  |
+| ----------------------- | --------------- | -------------------------------------------------------------------------------------------- |
+| `id`                    | Integer         | The job's unique identifier                                                                  |
+| `name`                  | String          | Job template name                                                                            |
+| `extra_vars`            | JSON            | Extra variables provided for job execution — the primary field this repo's policies evaluate |
+| `job_template`          | Object          | `id`, `name`, `job_type` of the job template                                                 |
+| `job_type`              | String          | `run`, `check`, or `scan`                                                                    |
+| `launch_type`           | String          | How the job was launched (`manual`, `scheduled`, `webhook`, `workflow`, etc.)                |
+| `launched_by`           | Object          | `id`, `name`, `type` of the user or system that launched the job                             |
+| `organization`          | Object          | `id`, `name` of the owning organization                                                      |
+| `inventory`             | Object          | Inventory details (`id`, `name`, `total_hosts`, etc.)                                        |
+| `project`               | Object          | SCM project details (`scm_type`, `scm_url`, `scm_branch`, etc.)                              |
+| `credentials`           | List of objects | Credentials attached to the job                                                              |
+| `execution_environment` | Object          | Execution environment `id`, `name`, `image`                                                  |
+
+
+Full example input payload (click to expand)
 
 ```json
 {
@@ -254,7 +285,7 @@ Ansible Automation Platform (AAP) can call out to this repo's OPA bundles at job
 }
 ```
 
-</details>
+
 
 **Expected output schema** — every policy in this repo returns this shape:
 
@@ -267,12 +298,14 @@ Ansible Automation Platform (AAP) can call out to this repo's OPA bundles at job
 }
 ```
 
-| Field | Type | Description |
-|---|---|---|
-| `allowed` | Boolean | Whether the action is permitted |
+
+| Field        | Type            | Description                                                              |
+| ------------ | --------------- | ------------------------------------------------------------------------ |
+| `allowed`    | Boolean         | Whether the action is permitted                                          |
 | `violations` | List of strings | Reasons why the action is not permitted (empty when `allowed` is `true`) |
 
-The example payloads under [`tests/data/autodotes_policy/payloads/`](tests/data/autodotes_policy/payloads/) follow this exact schema — see [Testing](#testing) above.
+
+The example payloads under `[tests/data/autodotes_policy/payloads/](tests/data/autodotes_policy/payloads/)` follow this exact schema — see [Testing](#testing) above.
 
 **Official Red Hat documentation:**
 
@@ -280,12 +313,17 @@ The example payloads under [`tests/data/autodotes_policy/payloads/`](tests/data/
 - [Implement policy enforcement](https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/integrate-assembly_controller_pac) — configuring OPA server settings and enforcement points in AAP
 - [Integrate with the external policy engine Open Policy Agent (OPA)](https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.7/integrate-integrate_with_the_external_policy_engine_open_policy_agent__opa_) — how AAP supports OPA integration end-to-end
 
+
+
 ## Security
 
 - **TLS everywhere** — the OPA server only accepts connections over HTTPS (port `8443`). Certificates are automatically provisioned and renewed by cert-manager.
+- **Bearer token authentication** — every OPA API call (except `/health`) must present a valid `Authorization: Bearer <jwt>` header, verified against an RS256 key pair sourced from Vault. Full setup (PKI, Vault integration, OPA configuration, JWT minting, rotation) is documented in [`docs/opa-authentication.md`](docs/opa-authentication.md).
 - **Least-privilege CI** — the GitHub Actions workflow requests only `pages: write` and `id-token: write`; all other permissions are read-only.
-- **Default-deny posture** — the `deny.rego` rule blocks all job execution unless an explicit allow rule overrides it, following a safe-by-default approach.
-- **No secrets in repo** — TLS key material is managed entirely by cert-manager and mounted into the pod at runtime. No credentials are stored in this repository.
+- **Default-deny posture** — the `deny.rego` rule blocks all job execution unless an explicit allow rule overrides it, following a safe-by-default approach. The server's own `system.authz` policy ([`k8s/base/authz.rego`](k8s/base/authz.rego)) follows the same default-deny model: it only allows `POST /v1/data/*` (policy evaluation) and `GET /v1/status` for authenticated callers, denying everything else.
+- **No secrets in repo** — TLS key material is managed entirely by cert-manager and mounted into the pod at runtime. The bearer-token verification key is sourced from HashiCorp Vault via an `ExternalSecret` ([`k8s/base/external-secret.yaml`](k8s/base/external-secret.yaml)) rather than being stored in this repository.
+
+
 
 ## How to Contribute
 
@@ -293,33 +331,35 @@ Contributions are welcome! Here's how to get started:
 
 1. **Fork** this repository and create a feature branch off `main`.
 2. **Add or edit** Rego policies under `policies/`.
-3. **Add or update unit tests** for your policy and, if needed, the example payloads it consumes — see [Testing](#testing) and [`tests/README.md`](tests/README.md).
+3. **Add or update unit tests** for your policy and, if needed, the example payloads it consumes — see [Testing](#testing) and `[tests/README.md](tests/README.md)`.
 4. **Test your policies locally** using the [OPA CLI](https://www.openpolicyagent.org/docs/latest/#running-opa):
-    ```sh
+  ```sh
     # Run the unit test suite
     opa test policies/ tests/data/ -v
 
     # Evaluate a policy against an ad-hoc input
     opa eval -b policies/autodotes_policy -d input.json 'data.autodotes_policy'
-    ```
+  ```
 5. **Open a pull request** — the CI workflow will lint, run unit tests, and validate the bundle build automatically.
 
 Please keep policy changes focused and include a short description in your PR of what the rule enforces and why.
 
 ### Pre-commit hooks
 
-This repo ships a [`.pre-commit-config.yaml`](.pre-commit-config.yaml) that catches common issues before they reach CI:
+This repo ships a `[.pre-commit-config.yaml](.pre-commit-config.yaml)` that catches common issues before they reach CI:
 
-| Hook | Purpose |
-|---|---|
-| `pre-commit-hooks` | Trailing whitespace, EOF newlines, YAML syntax, large files, merge conflict markers |
-| [`gitleaks`](https://github.com/gitleaks/gitleaks) | Scans staged changes for hardcoded secrets |
-| [`regal-lint`](https://github.com/open-policy-agent/regal) | Lints Rego style and best practices |
-| `opa-check` | Runs `opa check --strict` for Rego syntax/strict-mode errors |
-| `opa-fmt` | Runs `opa fmt --fail` to enforce consistent Rego formatting |
-| `opa-test` | Runs `opa test` against the example payloads in [`tests/data/`](tests/data/) |
 
-Setup (one-time, per clone) — requires [`pre-commit`](https://pre-commit.com/) and the [`opa`](https://www.openpolicyagent.org/docs/latest/#running-opa) CLI on your `PATH`:
+| Hook                                                       | Purpose                                                                             |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `pre-commit-hooks`                                         | Trailing whitespace, EOF newlines, YAML syntax, large files, merge conflict markers |
+| `[gitleaks](https://github.com/gitleaks/gitleaks)`         | Scans staged changes for hardcoded secrets                                          |
+| `[regal-lint](https://github.com/open-policy-agent/regal)` | Lints Rego style and best practices                                                 |
+| `opa-check`                                                | Runs `opa check --strict` for Rego syntax/strict-mode errors                        |
+| `opa-fmt`                                                  | Runs `opa fmt --fail` to enforce consistent Rego formatting                         |
+| `opa-test`                                                 | Runs `opa test` against the example payloads in `[tests/data/](tests/data/)`        |
+
+
+Setup (one-time, per clone) — requires `[pre-commit](https://pre-commit.com/)` and the `[opa](https://www.openpolicyagent.org/docs/latest/#running-opa)` CLI on your `PATH`:
 
 ```sh
 pip install pre-commit
@@ -331,6 +371,8 @@ Hooks run automatically on `git commit`. To run them against all files on demand
 ```sh
 pre-commit run --all-files
 ```
+
+
 
 ## License
 

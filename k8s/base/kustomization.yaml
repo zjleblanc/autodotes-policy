@@ -6,8 +6,9 @@ resources:
   - service.yaml
   - certificate.yaml
   - route.yaml
+  - external-secret.yaml
 
 configMapGenerator:
-  - name: opa-config
+  - name: opa-authz
     files:
-      - config.yaml
+      - authz.rego

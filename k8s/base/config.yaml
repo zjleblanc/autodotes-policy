@@ -1,3 +1,4 @@
+# Not deployed - for reference only
 services:
   github-pages:
     url: https://zjleblanc.github.io/autodotes-policy
@@ -9,3 +10,9 @@ bundles:
     polling:
       min_delay_seconds: 30
       max_delay_seconds: 60
+
+# External Secret
+keys:
+  aap:
+    key: "{{ .rsa_public_key }}"
+    algorithm: RS256
