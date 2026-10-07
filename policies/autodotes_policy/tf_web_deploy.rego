@@ -25,7 +25,7 @@ import rego.v1
 # Define allowed keys for extra_vars
 allowed_extra_var_keys := {
 	"az_ssh_pubkey",
-	"az_web_vm_size"
+	"az_web_vm_size",
 }
 
 # Define allowed values for specific keys
@@ -34,16 +34,7 @@ allowed_extra_var_values := {
 		"Standard_DS1_v2",
 		"Standard_DS2_v2",
 		"Standard_DS3_v2",
-	}
-}
-
-# -----------------------------------------------------------------------------
-# DEFAULT POLICY RESULT
-# -----------------------------------------------------------------------------
-
-default tf_web_deploy := {
-	"allowed": true,
-	"violations": [],
+	},
 }
 
 # -----------------------------------------------------------------------------
@@ -61,7 +52,7 @@ input_extra_vars := object.get(input, "extra_vars", {})
 violations contains violation_message if {
 	# Find keys that are not in the allowed list
 	disallowed_keys := {key |
-		input_extra_vars[key]
+		some key, _ in input_extra_vars
 		not key in allowed_extra_var_keys
 	}
 
@@ -87,8 +78,16 @@ violations contains violation_message if {
 }
 
 # -----------------------------------------------------------------------------
-# FINAL POLICY DECISION
+# POLICY DECISION
 # -----------------------------------------------------------------------------
+
+# METADATA
+# description: Allow a Terraform web deploy only when extra_vars are permitted.
+# entrypoint: true
+default tf_web_deploy := {
+	"allowed": true,
+	"violations": [],
+}
 
 # Override default result when violations exist
 tf_web_deploy := result if {

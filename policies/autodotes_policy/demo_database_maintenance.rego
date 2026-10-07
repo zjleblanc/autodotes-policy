@@ -17,11 +17,6 @@ import rego.v1
 # In AAP, attach: autodotes_policy/demo_database_maintenance
 # -----------------------------------------------------------------------------
 
-default demo_database_maintenance := {
-	"allowed": true,
-	"violations": [],
-}
-
 input_extra_vars := object.get(input, "extra_vars", {})
 
 # Treat common spellings as production without relying on string builtins
@@ -48,10 +43,17 @@ demo_database_maintenance_violations contains msg if {
 	is_production_target
 	ticket := object.get(input_extra_vars, "demo_change_ticket", "")
 	not valid_change_ticket(ticket)
-	msg := sprintf(
-		"production change control: missing or invalid change_ticket (%q); required format CHG-12345 style ticket (example CHG-4412)",
-		[ticket],
-	)
+	quoted_ticket := json.marshal(ticket)
+	requirement := "required format CHG-12345 style ticket (example CHG-4412)"
+	msg := $"production change control: missing or invalid change_ticket ({quoted_ticket}); {requirement}"
+}
+
+# METADATA
+# description: Require a CHG- ticket when database maintenance targets production.
+# entrypoint: true
+default demo_database_maintenance := {
+	"allowed": true,
+	"violations": [],
 }
 
 demo_database_maintenance := result if {
