@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-07 — Configure production TLS and OpenShift Route
+
+### Added
+- An OpenShift Route manifest (`k8s/base/route.yaml`) for `opa.autodotes.com` with TLS passthrough.
+
+### Changed
+- The OPA certificate now uses the `letsencrypt-prod` cluster issuer and the public `opa.autodotes.com` DNS name.
+- `k8s/base/kustomization.yaml` includes the new Route resource.
+
 ## 2026-10-07 — Fix OPA pod CrashLoopBackOff due to invalid TLS flag
 
 ### Fixed

@@ -5,7 +5,7 @@ metadata:
 spec:
   secretName: opa-tls
   issuerRef:
-    name: internal-ca-issuer
+    name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-    - opa.opa.svc.cluster.local
+    - opa.autodotes.com

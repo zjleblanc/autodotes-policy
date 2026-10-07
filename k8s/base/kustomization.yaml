@@ -5,6 +5,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - certificate.yaml
+  - route.yaml
 
 configMapGenerator:
   - name: opa-config
