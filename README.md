@@ -70,12 +70,16 @@ autodotes-policy/
 │           └── payloads/              # AAP-shaped example payloads, one file per policy
 │
 ├── k8s/
-│   └── base/                          # Kustomize manifests for the OPA server
-│       ├── deployment.yaml            # OPA Deployment (TLS + bundle config)
-│       ├── config.yaml                # Bundle sources & polling intervals
-│       ├── service.yaml               # ClusterIP Service (port 8443)
-│       ├── certificate.yaml           # cert-manager Certificate resource
-│       └── kustomization.yaml         # Namespace, resources, ConfigMap generator
+│   ├── base/                          # Common manifests for the OPA server
+│   │   ├── deployment.yaml            # OPA Deployment (TLS + bundle config)
+│   │   ├── config.yaml                # Bundle sources & polling intervals
+│   │   ├── service.yaml               # ClusterIP Service (port 8443)
+│   │   ├── certificate.yaml           # cert-manager Certificate resource
+│   │   └── kustomization.yaml         # Resources & ConfigMap generator
+│   │
+│   └── overlays/                      # Environment-specific customizations
+│       └── default/                   # Default environment
+│           └── kustomization.yaml     # Default namespace and config
 │
 ├── registry/                          # Pages index generator assets
 │   ├── generate_index.py              # Builds index.html files for GitHub Pages
@@ -108,13 +112,13 @@ Before deploying, make sure you have:
 
 ```sh
 # Using OpenShift CLI
-kubectl kustomize k8s/base | oc apply -f -
+kubectl kustomize k8s/overlays/default | oc apply -f -
 
 # Using plain kubectl
-kubectl kustomize k8s/base | kubectl apply -f -
+kubectl kustomize k8s/overlays/default | kubectl apply -f -
 ```
 
-This creates the `opa` namespace and deploys:
+This creates the `opa` namespace (as defined in the overlay) and deploys:
 - The OPA server `Deployment`
 - A `ClusterIP` Service on port `8443`
 - A cert-manager `Certificate` for `opa.autodotes.com`
@@ -149,7 +153,7 @@ Confirm the policy bundle loaded by checking the logs or calling `GET /v1/status
 
 2. Push to `main`. The CI workflow builds and publishes the bundle automatically.
 
-3. Tell OPA to load it by adding a matching entry under `bundles:` in [`k8s/base/config.yaml`](k8s/base/config.yaml).
+3. Tell OPA to load it by adding a matching entry under `bundles:` in [`k8s/base/config.yaml`](k8s/base/config.yaml) (or your `default` overlay).
 
 ### Bundle polling interval
 

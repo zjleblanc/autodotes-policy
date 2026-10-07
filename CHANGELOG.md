@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-06 — Adopt Kustomize overlays pattern for OPA server manifests
+
+### Added
+- A `k8s/overlays/default/` directory to hold environment-specific configuration, starting with the `opa` namespace.
+
+### Changed
+- The Kubernetes manifests now follow the Kustomize overlays pattern, separating common base resources from environment overrides.
+- `k8s/base/kustomization.yaml` no longer hardcodes a namespace, making the base manifests environment-agnostic.
+- The README reflects the new structure and updates the deployment instructions to use the `default` overlay.
+
 ## 2026-10-06 — Add OPA unit tests and Ansible Automation Platform integration docs
 
 ### Added
