@@ -164,9 +164,34 @@ Contributions are welcome! Here's how to get started:
     ```sh
     opa eval -b policies/autodotes_policy -d input.json 'data.autodotes_policy'
     ```
-4. **Open a pull request** — the CI workflow will validate the bundle build automatically.
+4. **Open a pull request** — the CI workflow will lint and validate the bundle build automatically.
 
 Please keep policy changes focused and include a short description in your PR of what the rule enforces and why.
+
+### Pre-commit hooks
+
+This repo ships a [`.pre-commit-config.yaml`](.pre-commit-config.yaml) that catches common issues before they reach CI:
+
+| Hook | Purpose |
+|---|---|
+| `pre-commit-hooks` | Trailing whitespace, EOF newlines, YAML syntax, large files, merge conflict markers |
+| [`gitleaks`](https://github.com/gitleaks/gitleaks) | Scans staged changes for hardcoded secrets |
+| [`regal-lint`](https://github.com/open-policy-agent/regal) | Lints Rego style and best practices |
+| `opa-check` | Runs `opa check --strict` for Rego syntax/strict-mode errors |
+| `opa-fmt` | Runs `opa fmt --fail` to enforce consistent Rego formatting |
+
+Setup (one-time, per clone) — requires [`pre-commit`](https://pre-commit.com/) and the [`opa`](https://www.openpolicyagent.org/docs/latest/#running-opa) CLI on your `PATH`:
+
+```sh
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run them against all files on demand:
+
+```sh
+pre-commit run --all-files
+```
 
 ## License
 

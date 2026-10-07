@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-10-06 — Add pre-commit hooks and CI Rego linting
+
+### Added
+- A `.pre-commit-config.yaml` with hooks for file hygiene (pre-commit-hooks), secret scanning (gitleaks), Rego linting (Regal), and Rego syntax/formatting checks (`opa check --strict`, `opa fmt --fail`).
+- A `.regal/config.yaml` carrying Regal's default rule set, ready for future per-rule customization.
+
+### Changed
+- The bundle workflow now runs `opa check --strict` and `regal lint` against all policies before building bundles.
+- The README documents how to install and run the pre-commit hooks locally.
+
 ## 2026-10-06 — Publish a dark bundle index on GitHub Pages
 
 ### Added

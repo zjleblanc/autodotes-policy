@@ -1,0 +1,21 @@
+# Regal configuration for this repo.
+# https://openpolicyagent.org/projects/regal/configuration
+#
+# Regal auto-discovers this file (`.regal/config.yaml`), so no extra flags
+# are needed when running `regal lint policies/` locally or in CI.
+#
+# All rules are enabled (at their default level) out of the box. Override
+# individual rules or whole categories here as the policy set grows, e.g.:
+#
+# rules:
+#   style:
+#     line-length:
+#       max-line-length: 120
+#       level: warning
+#   custom:
+#     naming-convention:
+#       level: error
+#       conventions:
+#         - pattern: '^autodotes_policy[a-z_.]*$'
+#           targets:
+#             - package

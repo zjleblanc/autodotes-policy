@@ -32,6 +32,17 @@ jobs:
         with:
           version: latest
 
+      - name: Check Rego syntax (opa check --strict)
+        run: opa check --strict policies/
+
+      - name: Setup Regal
+        uses: open-policy-agent/setup-regal@v1
+        with:
+          version: latest
+
+      - name: Lint Rego policies (regal)
+        run: regal lint --format github policies/
+
       - name: Detect changed policy directories
         id: changes
         run: |
