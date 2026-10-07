@@ -1,0 +1,596 @@
+{
+  "disk_expansion": {
+    "valid_growth": {
+      "id": 401,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:00:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "GB",
+        "disk_growth": 10,
+        "disk_target": -1,
+        "ritm_number": "RITM0000052",
+        "ritm_sys_id": "c199ca6fdd184e37ac1f6fb248c8a44a"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "valid_target": {
+      "id": 402,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:05:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "GB",
+        "disk_growth": -1,
+        "disk_target": 50,
+        "ritm_number": "RITM0000053",
+        "ritm_sys_id": "d2a0db7fee295fb59065cd0940834061"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "invalid_unit": {
+      "id": 403,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:10:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "furlongs",
+        "disk_growth": 10,
+        "disk_target": -1,
+        "ritm_number": "RITM0000054",
+        "ritm_sys_id": "e3b1ec8fff3a6fc69065cd0940834072"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "no_growth_or_target": {
+      "id": 404,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:15:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "GB",
+        "disk_growth": -1,
+        "disk_target": -1,
+        "ritm_number": "RITM0000055",
+        "ritm_sys_id": "f4c2fd9001483a7d9065cd0940834083"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "missing_ritm": {
+      "id": 405,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:20:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "GB",
+        "disk_growth": 10,
+        "disk_target": -1
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "bad_ritm_format": {
+      "id": 406,
+      "name": "Disk Expansion",
+      "created": "2026-04-01T10:25:00.000000Z",
+      "created_by": {
+        "id": 2,
+        "username": "ops_user",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [
+        {
+          "id": 5,
+          "name": "VM SSH Credential",
+          "description": "",
+          "organization": null,
+          "credential_type": 1,
+          "managed": false,
+          "kind": "ssh",
+          "cloud": false,
+          "kubernetes": false
+        }
+      ],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "_host": "ao-vm-0106",
+        "disk_unit": "GB",
+        "disk_growth": 10,
+        "disk_target": -1,
+        "ritm_number": "RITM123",
+        "ritm_sys_id": "a0b1c2d3e4f5061728394a5b6c7d8e9f"
+      },
+      "forks": 0,
+      "hosts_count": 1,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 3,
+        "name": "VM Fleet Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 20,
+        "total_groups": 1,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 20,
+        "name": "Disk Expansion",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "ao-vm-0106",
+      "launched_by": {
+        "id": 2,
+        "name": "ops_user",
+        "type": "user",
+        "url": "/api/v2/users/2/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "disk_expand.yml",
+      "project": {
+        "id": 11,
+        "name": "VM Operations",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/example-org/vm-operations",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    }
+  }
+}

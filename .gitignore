@@ -9,3 +9,7 @@
 *.pem
 *.key
 *.pub
+
+# Token generator script (docs/opa-authentication.md).
+generate_token.py
+__pycache__/
