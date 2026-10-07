@@ -80,7 +80,7 @@ jobs:
               opa build -b "${dir}" -o "${out}"
             else
               echo "Fetching existing bundle '${name}' from Pages (unchanged)"
-              if curl -fsSL "${PAGES_BASE}/bundles/${name}.bundle.tar.gz" -o "${out}"; then
+              if curl -fsSL -R "${PAGES_BASE}/bundles/${name}.bundle.tar.gz" -o "${out}"; then
                 echo "  -> reused existing bundle for '${name}'"
               else
                 echo "  -> fetch failed for '${name}', building from source"
@@ -91,6 +91,269 @@ jobs:
 
           echo "Final bundles:"
           ls -la _site/bundles
+
+      - name: Write Pages index
+        env:
+          PAGES_BASE: https://zjleblanc.github.io/autodotes-policy
+        run: |
+          python3 - <<'PY'
+          import html
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          site = Path("_site")
+          bundle_dir = site / "bundles"
+          files = sorted(
+              p for p in bundle_dir.iterdir()
+              if p.is_file() and p.name.endswith(".bundle.tar.gz")
+          )
+
+          root = urlparse(os.environ["PAGES_BASE"]).path
+          if not root.endswith("/"):
+              root += "/"
+          site_name = root.strip("/") or "index"
+
+          opa_icon = "data:image/png;base64,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"
+
+          document = """<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>@@TITLE@@</title>
+              <style>
+                  :root { color-scheme: dark; }
+                  body {
+                      margin: 0;
+                      padding: 1.5rem;
+                      background: #000;
+                      color: #bfbfbf;
+                      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                  }
+                  .crumbs {
+                      display: flex;
+                      flex-wrap: wrap;
+                      align-items: center;
+                      max-width: 52rem;
+                      margin: 0 0 1rem;
+                      padding: 0 0 0.75rem;
+                      list-style: none;
+                      font-size: 1.75rem;
+                      font-weight: 500;
+                      line-height: 1.2;
+                      border-bottom: 1px solid #40494b;
+                  }
+                  .crumb { display: inline-flex; align-items: center; color: #d4dbdd; }
+                  .crumb + .crumb { padding-left: 0.5rem; }
+                  .crumb + .crumb::before {
+                      content: "/";
+                      padding-right: 0.5rem;
+                      color: #81949c;
+                      font-weight: 400;
+                  }
+                  .crumb a { color: #d4dbdd; text-decoration: none; }
+                  .crumb a:hover { color: #f8f8f8; }
+                  .crumb.current { color: #f8f8f8; }
+                  .home-icon { width: 1.15em; height: 1.15em; display: block; fill: currentColor; }
+                  .clip {
+                      position: absolute;
+                      width: 1px;
+                      height: 1px;
+                      padding: 0;
+                      margin: -1px;
+                      overflow: hidden;
+                      clip: rect(0, 0, 0, 0);
+                      white-space: nowrap;
+                      border: 0;
+                  }
+                  .table-wrap {
+                      max-width: 52rem;
+                      overflow: auto;
+                      border: 1px solid #40494b;
+                      border-radius: 0.75rem;
+                  }
+                  .files {
+                      width: 100%;
+                      border-collapse: collapse;
+                  }
+                  .files th,
+                  .files td {
+                      padding: 0.75rem 1rem;
+                      text-align: left;
+                      vertical-align: middle;
+                  }
+                  .files th {
+                      color: #f8f8f8;
+                      font-weight: 600;
+                      background: #121617;
+                      border-bottom: 1px solid #5b686b;
+                  }
+                  .files tbody tr:nth-child(odd) { background: #1c2426; }
+                  .files tbody tr:nth-child(even) { background: #2a3336; }
+                  .files tbody tr:hover { background: #343e41; }
+                  .files .size,
+                  .files .modified {
+                      text-align: right;
+                      white-space: nowrap;
+                      color: #81949c;
+                      font-variant-numeric: tabular-nums;
+                  }
+                  .files th.size,
+                  .files th.modified,
+                  .files th.download { color: #f8f8f8; }
+                  .files .download { width: 1%; text-align: center; white-space: nowrap; }
+                  .download a {
+                      display: inline-flex;
+                      color: #d4dbdd;
+                      text-decoration: none;
+                  }
+                  .download a:hover,
+                  .download a:focus-visible { color: #f8f8f8; }
+                  .download-icon { width: 1.25rem; height: 1.25rem; display: block; fill: currentColor; }
+                  .file {
+                      display: flex;
+                      align-items: center;
+                      gap: 0.75rem;
+                      min-width: 12rem;
+                  }
+                  .opa { width: 2rem; height: 2rem; flex: none; }
+                  .file a {
+                      color: #d4dbdd;
+                      text-decoration: none;
+                      overflow-wrap: anywhere;
+                  }
+                  .file a:hover,
+                  .file a:focus-visible { color: #f8f8f8; }
+                  @media (max-width: 40rem) {
+                      .crumbs { font-size: 1.35rem; }
+                  }
+              </style>
+          </head>
+          <body>
+              <nav aria-label="Breadcrumb">
+                  <ol class="crumbs">
+          @@CRUMBS@@
+                  </ol>
+              </nav>
+              <div class="table-wrap">
+                  <table class="files">
+                      <thead>
+                          <tr>
+                              <th class="name">Name</th>
+                              <th class="size">Size</th>
+                              <th class="modified">Last Modified</th>
+                              <th class="download">Download</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+          @@ROWS@@
+                      </tbody>
+                  </table>
+              </div>
+              <script>
+                  document.querySelectorAll("time.local").forEach((node) => {
+                      const date = new Date(node.dateTime);
+                      if (Number.isNaN(date.getTime())) return;
+                      node.textContent = date.toLocaleString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                      });
+                  });
+              </script>
+          </body>
+          </html>
+          """
+
+          download_icon = (
+              '<svg class="download-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" focusable="false">'
+              '<path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>'
+              '<path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>'
+              "</svg>"
+          )
+
+          home_icon = (
+              '<svg class="home-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" focusable="false">'
+              '<path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 0-.5.5v1.293z"/>'
+              '<path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"/>'
+              "</svg>"
+          )
+
+          def crumb_body(label, home):
+              if not home:
+                  return html.escape(label)
+              return f'{home_icon}<span class="clip">{html.escape(label)}</span>'
+
+          def crumbs_html(crumbs):
+              parts = []
+              for index, (label, href) in enumerate(crumbs):
+                  last = index == len(crumbs) - 1
+                  body = crumb_body(label, index == 0)
+                  if last:
+                      parts.append(
+                          f'            <li class="crumb current" aria-current="page">{body}</li>'
+                      )
+                  elif not href:
+                      parts.append(f'            <li class="crumb">{body}</li>')
+                  else:
+                      parts.append(
+                          '            <li class="crumb">'
+                          f'<a href="{html.escape(href, quote=True)}" aria-label="{html.escape(label, quote=True)}">{body}</a></li>'
+                      )
+              return "\n".join(parts)
+
+          def rows_html(entries):
+              blocks = []
+              for name, href, size, mtime in entries:
+                  modified = datetime.fromtimestamp(mtime, timezone.utc).isoformat().replace("+00:00", "Z")
+                  blocks.append(
+                      "\n".join(
+                          [
+                              "            <tr>",
+                              "                <td>",
+                              '                    <span class="file">',
+                              f'                        <img class="opa" src="{opa_icon}" alt="" width="32" height="32">',
+                              f'                        <a href="{html.escape(href, quote=True)}">{html.escape(name)}</a>',
+                              "                    </span>",
+                              "                </td>",
+                              f'                <td class="size">{size} bytes</td>',
+                              f'                <td class="modified"><time class="local" datetime="{modified}">{modified}</time></td>',
+                              "                <td class=\"download\">",
+                              f'                    <a href="{html.escape(href, quote=True)}" download="{html.escape(name, quote=True)}" aria-label="Download {html.escape(name, quote=True)}">{download_icon}</a>',
+                              "                </td>",
+                              "            </tr>",
+                          ]
+                      )
+                  )
+              return "\n".join(blocks)
+
+          def render(crumbs, entries):
+              title = " / ".join(label for label, _ in crumbs)
+              return (
+                  document.replace("@@TITLE@@", html.escape(title))
+                  .replace("@@CRUMBS@@", crumbs_html(crumbs))
+                  .replace("@@ROWS@@", rows_html(entries))
+              )
+
+          bundle_entries = []
+          root_entries = []
+          for path in files:
+              st = path.stat()
+              bundle_entries.append((path.name, path.name, st.st_size, st.st_mtime))
+              root_entries.append((path.name, f"bundles/{path.name}", st.st_size, st.st_mtime))
+
+          (site / "index.html").write_text(
+              render([(site_name, None), ("bundles", None)], root_entries) + "\n"
+          )
+          (bundle_dir / "index.html").write_text(
+              render([(site_name, "../"), ("bundles", None)], bundle_entries) + "\n"
+          )
+          print(f"Wrote {site / 'index.html'} and {bundle_dir / 'index.html'}")
+          PY
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-06 — Publish a dark bundle index on GitHub Pages
+
+### Added
+- The bundle workflow writes a GitHub Pages index that lists each published bundle in a dark striped table, colored from the OPA logo. Each row shows the bundle name with the OPA icon, its size, a last-modified time in the browser’s local timezone, and a download link. A breadcrumb uses a home icon for the repo and a bundles segment.
+
+### Changed
+- Unchanged bundles copied from Pages keep the remote file time, so the index last-modified column reflects when that bundle was last published.
+
 ## 2026-10-06 — Rebuild only changed OPA bundles
 
 ### Changed
