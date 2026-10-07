@@ -32,7 +32,7 @@ sequenceDiagram
     Note over Vault: RSA private key stays in Vault;<br/>used only to sign JWTs for AAP
     AAP->>OPA: POST /v1/data/autodotes_policy/...<br/>Authorization: Bearer [JWT]
     OPA->>OPA: --authentication=token verifies<br/>JWT signature (RS256 public key)
-    OPA->>OPA: --authorization=basic evaluates<br/>system.authz (policies/system/authz.rego)
+    OPA->>OPA: --authorization=basic evaluates<br/>system.authz (k8s/base/rego/system/authz.rego)
     OPA-->>AAP: 200 {allowed, violations} or 401/403
 ```
 
@@ -42,7 +42,7 @@ OPA runs with two independent, stacked controls (see
 | Flag | Purpose |
 |---|---|
 | `--authentication=token` | Verifies the JWT signature in `Authorization: Bearer <jwt>` on every request (except `/health`, which OPA always leaves open for liveness/readiness probes). Rejects invalid/unsigned/malformed tokens with `401`. |
-| `--authorization=basic` | After authentication succeeds, evaluates the `system.authz` policy ([`policies/system/authz.rego`](../policies/system/authz.rego)) to decide whether this specific authenticated request is permitted. Rejects disallowed requests with `403`. |
+| `--authorization=basic` | After authentication succeeds, evaluates the `system.authz` policy ([`k8s/base/rego/system/authz.rego`](../k8s/base/rego/system/authz.rego)) to decide whether this specific authenticated request is permitted. Rejects disallowed requests with `403`. |
 
 RS256 (asymmetric) is used instead of a shared/symmetric secret so that OPA
 only ever holds the **public** verification key. The **private** signing
@@ -135,7 +135,7 @@ Four files work together:
 | [`k8s/base/config.yaml`](../k8s/base/config.yaml) | Non-secret reference copy of the bundle/polling config. **Not deployed as-is** — kept in sync manually with the template below so the repo documents the full config in one readable place. |
 | [`k8s/base/external-secret.yaml`](../k8s/base/external-secret.yaml) | The `ExternalSecret` that actually renders the live config. Templates the bundle/polling config *plus* a `keys` block containing the Vault-sourced public key into a Secret named `opa-config`. |
 | [`k8s/base/deployment.yaml`](../k8s/base/deployment.yaml) | Mounts `opa-config` (now a `Secret`, not a `ConfigMap`) at `/etc/opa/config.yaml`, mounts the `authz.rego` ConfigMap at `/etc/opa/authz/`, and passes `--authentication=token --authorization=basic /etc/opa/authz/` to `opa run`. |
-| [`policies/system/authz.rego`](../policies/system/authz.rego) | The `system.authz` package OPA evaluates per request once authenticated. |
+| [`k8s/base/rego/system/authz.rego`](../k8s/base/rego/system/authz.rego) | The `system.authz` package OPA evaluates per request once authenticated. |
 
 The relevant `keys` block in the `ExternalSecret` template:
 
@@ -150,7 +150,7 @@ keys:
 match anything on the AAP side. OPA tries each configured key against the
 JWT's signature; with only one key configured, that's the one used.
 
-The `system.authz` policy ([`policies/system/authz.rego`](../policies/system/authz.rego))
+The `system.authz` policy ([`k8s/base/rego/system/authz.rego`](../k8s/base/rego/system/authz.rego))
 is intentionally narrow — default-deny, then two explicit allows:
 
 ```rego
@@ -318,4 +318,4 @@ Common causes of unexpected `401`s: the JWT was signed with a different
 key than the one currently in Vault, or the `ExternalSecret` hasn't
 refreshed yet after a key rotation. Common causes of unexpected `403`s: the
 request's method/path isn't one of the two explicitly allowed in
-[`policies/system/authz.rego`](../policies/system/authz.rego).
+[`k8s/base/rego/system/authz.rego`](../k8s/base/rego/system/authz.rego).

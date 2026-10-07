@@ -11,4 +11,4 @@ resources:
 configMapGenerator:
   - name: opa-authz
     files:
-      - ../../policies/system/authz.rego
+      - rego/system/authz.rego
