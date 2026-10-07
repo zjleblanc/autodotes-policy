@@ -14,6 +14,7 @@ spec:
       labels:
         app: opa
     spec:
+      revisionHistoryLimit: 3
       containers:
         - name: opa
           image: docker.io/openpolicyagent/opa:latest
