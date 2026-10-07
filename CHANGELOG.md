@@ -4,13 +4,13 @@
 
 ### Added
 - `k8s/base/external-secret.yaml`: an `ExternalSecret` that reads an RSA public key from a `vault-backend` `ClusterSecretStore` and renders the OPA bundle/polling config plus a `keys` block into the `opa-config` Secret.
-- `k8s/base/authz.rego`: a `system.authz` policy, loaded locally by OPA, that default-denies and only allows authenticated `POST /v1/data/*` (policy evaluation) and `GET /v1/status` (monitoring).
+- `policies/system/authz.rego`: a `system.authz` policy, loaded locally by OPA, that default-denies and only allows authenticated `POST /v1/data/*` (policy evaluation) and `GET /v1/status` (monitoring).
 - `docs/opa-authentication.md`: a step-by-step guide covering PKI setup, Vault integration, how the OPA config/deployment/authz policy fit together, minting an RS256 JWT for AAP, key rotation/revocation, and troubleshooting.
 - `.gitignore` now excludes `*.pem`, `*.key`, and `*.pub` so key material generated while following the new docs can't be committed accidentally.
 
 ### Changed
 - `k8s/base/deployment.yaml` runs OPA with `--authentication=token --authorization=basic`, mounts the new `authz.rego` ConfigMap at `/etc/opa/authz`, and mounts `opa-config` as a `Secret` instead of a `ConfigMap` since it now carries the JWT verification key.
-- `k8s/base/kustomization.yaml`'s `configMapGenerator` now builds `opa-authz` from `authz.rego` and adds `external-secret.yaml` to its resources; the `opa-config` Secret is managed by the `ExternalSecret` instead.
+- `k8s/base/kustomization.yaml`'s `configMapGenerator` now builds `opa-authz` from `policies/system/authz.rego` and adds `external-secret.yaml` to its resources; the `opa-config` Secret is managed by the `ExternalSecret` instead.
 - `k8s/base/config.yaml` is kept only as a non-secret reference copy of the live config now templated inside `external-secret.yaml`.
 - README's Security section, Prerequisites, and Configuration instructions now point to `docs/opa-authentication.md` and reflect the Secret-based `opa-config` and new `opa-authz` ConfigMap.
 

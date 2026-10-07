@@ -89,6 +89,10 @@ jobs:
 
           for dir in "${dirs[@]}"; do
             name="$(basename "${dir%/}")"
+            if [ "${name}" = "system" ]; then
+              echo "Skipping '${name}' (server authorization policy is not a bundle)"
+              continue
+            fi
             out="_site/bundles/${name}.bundle.tar.gz"
 
             if [ "${REBUILD_ALL}" = "true" ] || grep -qw "${name}" <<< "${CHANGED_DIRS}"; then

@@ -30,7 +30,7 @@ spec:
             - "/etc/opa/config.yaml"
             - "--authentication=token"
             - "--authorization=basic"
-            - "/etc/opa/authz/"
+            - "/etc/opa/authz/authz.rego"
           ports:
             - name: https
               containerPort: 8443

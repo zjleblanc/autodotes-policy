@@ -73,6 +73,9 @@ autodotes-policy/
 │       ├── tf_web_deploy.rego
 │       └── tf_web_deploy_test.rego
 │
+│   └── system/                        # Server-level policies (not bundles)
+│       └── authz.rego                 # system.authz policy enforced by the OPA server itself
+│
 ├── tests/                             # Example payloads consumed by *_test.rego
 │   ├── README.md                      # How to run / write OPA unit tests
 │   └── data/
@@ -84,7 +87,6 @@ autodotes-policy/
 │   │   ├── deployment.yaml            # OPA Deployment (TLS + bundle config + bearer-token auth)
 │   │   ├── config.yaml                # Reference copy of bundle sources & polling intervals
 │   │   ├── external-secret.yaml       # Pulls JWT verification key from Vault; renders opa-config Secret
-│   │   ├── authz.rego                 # system.authz policy enforced by the OPA server itself
 │   │   ├── service.yaml               # ClusterIP Service (port 8443)
 │   │   ├── certificate.yaml           # cert-manager Certificate resource
 │   │   └── kustomization.yaml         # Resources & ConfigMap generator
@@ -320,7 +322,7 @@ The example payloads under `[tests/data/autodotes_policy/payloads/](tests/data/a
 - **TLS everywhere** — the OPA server only accepts connections over HTTPS (port `8443`). Certificates are automatically provisioned and renewed by cert-manager.
 - **Bearer token authentication** — every OPA API call (except `/health`) must present a valid `Authorization: Bearer <jwt>` header, verified against an RS256 key pair sourced from Vault. Full setup (PKI, Vault integration, OPA configuration, JWT minting, rotation) is documented in [`docs/opa-authentication.md`](docs/opa-authentication.md).
 - **Least-privilege CI** — the GitHub Actions workflow requests only `pages: write` and `id-token: write`; all other permissions are read-only.
-- **Default-deny posture** — the `deny.rego` rule blocks all job execution unless an explicit allow rule overrides it, following a safe-by-default approach. The server's own `system.authz` policy ([`k8s/base/authz.rego`](k8s/base/authz.rego)) follows the same default-deny model: it only allows `POST /v1/data/*` (policy evaluation) and `GET /v1/status` for authenticated callers, denying everything else.
+- **Default-deny posture** — the `deny.rego` rule blocks all job execution unless an explicit allow rule overrides it, following a safe-by-default approach. The server's own `system.authz` policy ([`policies/system/authz.rego`](policies/system/authz.rego)) follows the same default-deny model: it only allows `POST /v1/data/*` (policy evaluation) and `GET /v1/status` for authenticated callers, denying everything else.
 - **No secrets in repo** — TLS key material is managed entirely by cert-manager and mounted into the pod at runtime. The bearer-token verification key is sourced from HashiCorp Vault via an `ExternalSecret` ([`k8s/base/external-secret.yaml`](k8s/base/external-secret.yaml)) rather than being stored in this repository.
 
 
