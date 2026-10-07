@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-07 — Fix OPA health checks by allowing unauthenticated /health access
+
+### Fixed
+- `k8s/base/rego/system/authz.rego`: updated the OPA server authorization policy to explicitly allow unauthenticated `GET /health` requests and simplified the `authz` rule to return a boolean, resolving `500 Internal Server Error` responses to Kubernetes liveness/readiness probes when `--authorization=basic` is enabled.
+
 ## 2026-10-07 — Fix Kustomize ComparisonError for OPA authz policy
 
 ### Fixed

@@ -3,11 +3,7 @@ package system
 import rego.v1
 
 # -----------------------------------------------------------------------------
-# OPA server authorization policy (not part of the autodotes_policy bundle).
-#
-# Loaded locally from a mounted ConfigMap (see k8s/base/kustomization.yaml and
-# k8s/base/deployment.yaml) so the server's own access control does not depend
-# on the remote GitHub Pages bundle being reachable.
+# OPA server authorization policy.
 #
 # Evaluated by OPA on every API request when --authorization=basic is set.
 # input.identity is populated only when --authentication=token has already
@@ -18,11 +14,17 @@ import rego.v1
 # Kubernetes liveness/readiness probes are unaffected.
 # -----------------------------------------------------------------------------
 
-default authz := {"allow": false}
+default authz := false
+
+# Allow health checks without authentication.
+authz := true if {
+	input.method == "GET"
+	input.path == ["health"]
+}
 
 # Allow policy evaluation calls (POST /v1/data/...) for authenticated callers.
-# This is the only endpoint AAP needs to query policy decisions.
-authz := {"allow": true} if {
+# This is the only endpoint integrations need to query policy decisions.
+authz := true if {
 	input.identity
 	input.method == "POST"
 	input.path[0] == "v1"
@@ -31,7 +33,7 @@ authz := {"allow": true} if {
 
 # Allow bundle/policy status checks (GET /v1/status) for authenticated
 # monitoring clients.
-authz := {"allow": true} if {
+authz := true if {
 	input.identity
 	input.method == "GET"
 	input.path == ["v1", "status"]
