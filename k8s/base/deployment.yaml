@@ -24,7 +24,7 @@ spec:
             - ":8443"
             - "--tls-cert-file"
             - "/certs/tls.crt"
-            - "--tls-key-file"
+            - "--tls-private-key-file"
             - "/certs/tls.key"
             - "--config-file"
             - "/etc/opa/config.yaml"

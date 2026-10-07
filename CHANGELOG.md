@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-07 — Fix OPA pod CrashLoopBackOff due to invalid TLS flag
+
+### Fixed
+- Updated the OPA deployment to use `--tls-private-key-file` instead of the deprecated/removed `--tls-key-file` flag, resolving a `CrashLoopBackOff` issue in newer OPA versions.
+
 ## 2026-10-06 — Adopt Kustomize overlays pattern for OPA server manifests
 
 ### Added
