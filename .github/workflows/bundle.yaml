@@ -24,13 +24,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Install OPA
         uses: open-policy-agent/setup-opa@v2
         with:
           version: latest
 
+      - name: Detect changed policy directories
+        id: changes
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual dispatch: rebuilding all bundles"
+            echo "rebuild_all=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git diff --name-only HEAD~1 | grep -q '.github/workflows/bundle.yaml'; then
+            echo "Workflow file changed: rebuilding all bundles"
+            echo "rebuild_all=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed=$(git diff --name-only HEAD~1 -- policies/ \
+            | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          echo "Changed policy directories: ${changed}"
+          echo "changed_dirs=${changed}" >> "$GITHUB_OUTPUT"
+          echo "rebuild_all=false" >> "$GITHUB_OUTPUT"
+
       - name: Build bundles
+        env:
+          PAGES_BASE: https://zjleblanc.github.io/autodotes-policy
+          REBUILD_ALL: ${{ steps.changes.outputs.rebuild_all }}
+          CHANGED_DIRS: ${{ steps.changes.outputs.changed_dirs }}
         run: |
           set -euo pipefail
           mkdir -p _site/bundles
@@ -45,11 +74,22 @@ jobs:
           for dir in "${dirs[@]}"; do
             name="$(basename "${dir%/}")"
             out="_site/bundles/${name}.bundle.tar.gz"
-            echo "Building bundle '${name}' from ${dir} -> ${out}"
-            opa build -b "${dir}" -o "${out}"
+
+            if [ "${REBUILD_ALL}" = "true" ] || grep -qw "${name}" <<< "${CHANGED_DIRS}"; then
+              echo "Building bundle '${name}' from ${dir} -> ${out} (changed)"
+              opa build -b "${dir}" -o "${out}"
+            else
+              echo "Fetching existing bundle '${name}' from Pages (unchanged)"
+              if curl -fsSL "${PAGES_BASE}/bundles/${name}.bundle.tar.gz" -o "${out}"; then
+                echo "  -> reused existing bundle for '${name}'"
+              else
+                echo "  -> fetch failed for '${name}', building from source"
+                opa build -b "${dir}" -o "${out}"
+              fi
+            fi
           done
 
-          echo "Built bundles:"
+          echo "Final bundles:"
           ls -la _site/bundles
 
       - name: Upload Pages artifact

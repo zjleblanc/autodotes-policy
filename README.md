@@ -6,8 +6,6 @@ Write a Rego rule, push to `main`, and your policy is live — no manual deploys
 
 [![Build and Publish OPA Bundle](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml/badge.svg)](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml)
 
----
-
 ## Table of Contents
 
 - [About](#about)
@@ -20,13 +18,9 @@ Write a Rego rule, push to `main`, and your policy is live — no manual deploys
 - [How to Contribute](#how-to-contribute)
 - [License](#license)
 
----
-
 ## About
 
 **autodotes-policy** is a GitOps repository that manages [Open Policy Agent](https://www.openpolicyagent.org/) (OPA) policies for the Autodotes environment. It gives you a single source of truth for all your authorization rules: policies live in this repo as human-readable [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) files, a GitHub Actions workflow automatically builds and publishes them as OPA bundles, and a running OPA server hot-reloads them — no manual steps required.
-
----
 
 ## Features
 
@@ -38,8 +32,6 @@ Write a Rego rule, push to `main`, and your policy is live — no manual deploys
 | 🔒 **TLS out of the box** | The OPA server is exposed over HTTPS via cert-manager and Let's Encrypt |
 | ☸️ **Kubernetes-native** | Deployable to any Kubernetes cluster (or MicroShift) using a single Kustomize command |
 | ➕ **Extensible** | Add a new policy set by creating a new folder — the CI pipeline discovers it automatically |
-
----
 
 ## Architecture
 
@@ -54,8 +46,6 @@ flowchart LR
 ```
 
 > The OPA server polls each bundle URL on an interval. When a new bundle is available it's applied instantly — **no ConfigMap changes, no rolling restarts**.
-
----
 
 ## Project Structure
 
@@ -81,8 +71,6 @@ autodotes-policy/
 ```
 
 **Adding a new policy bundle** is as simple as creating a new subdirectory under `policies/`. The workflow discovers it automatically on the next push.
-
----
 
 ## Getting Started
 
@@ -128,8 +116,6 @@ Once the pod is `Running` and the certificate shows `Ready: True`, OPA is reacha
 
 Confirm the policy bundle loaded by checking the logs or calling `GET /v1/status` on the OPA API.
 
----
-
 ## Configuration
 
 ### Adding a new policy bundle
@@ -161,16 +147,12 @@ bundles:
 
 Simply edit the `.rego` files under `policies/<name>/` and push to `main`. No changes to `k8s/` are needed — OPA picks up the new bundle on the next poll cycle.
 
----
-
 ## Security
 
 - **TLS everywhere** — the OPA server only accepts connections over HTTPS (port `8443`). Certificates are automatically provisioned and renewed by cert-manager.
 - **Least-privilege CI** — the GitHub Actions workflow requests only `pages: write` and `id-token: write`; all other permissions are read-only.
 - **Default-deny posture** — the `deny.rego` rule blocks all job execution unless an explicit allow rule overrides it, following a safe-by-default approach.
 - **No secrets in repo** — TLS key material is managed entirely by cert-manager and mounted into the pod at runtime. No credentials are stored in this repository.
-
----
 
 ## How to Contribute
 
@@ -185,8 +167,6 @@ Contributions are welcome! Here's how to get started:
 4. **Open a pull request** — the CI workflow will validate the bundle build automatically.
 
 Please keep policy changes focused and include a short description in your PR of what the rule enforces and why.
-
----
 
 ## License
 
