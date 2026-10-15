@@ -88,7 +88,9 @@ def extract_bundle_policies(bundle_path):
         with tarfile.open(bundle_path, "r:gz") as tf:
             members = sorted(
                 (m for m in tf.getmembers()
-                 if m.name.endswith(".rego") and not m.name.endswith("_test.rego")),
+                 if m.name.endswith(".rego")
+                 and not m.name.endswith("_test.rego")
+                 and not m.name.endswith("_helpers.rego")),
                 key=lambda m: Path(m.name).name,
             )
             for member in members:
@@ -110,7 +112,7 @@ def detail_row_html(bundle_id, policies):
     detail_id = html.escape(f"details-{bundle_id}", quote=True)
     items = []
     for filename, description in policies:
-        esc_name = html.escape(filename)
+        esc_name = html.escape(filename.removesuffix(".rego"))
         if description:
             esc_desc = html.escape(description)
             items.append(

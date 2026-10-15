@@ -6,6 +6,8 @@ Write a Rego rule, push to `main`, and your policy is live — no manual deploys
 
 ![Build and Publish OPA Bundle](https://github.com/zjleblanc/autodotes-policy/actions/workflows/bundle.yaml/badge.svg)
 
+**Bundle registry:** [zjleblanc.github.io/autodotes-policy](https://zjleblanc.github.io/autodotes-policy)
+
 ## Table of Contents
 
 - [About](#about)

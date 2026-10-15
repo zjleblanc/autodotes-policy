@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-15 — Refine bundle registry detail rows and add site link to README
+
+### Added
+- `README.md`: bundle registry link (`zjleblanc.github.io/autodotes-policy`) added below the CI badge for quick access.
+
+### Changed
+- `registry/generate_index.py`: helper files (`*_helpers.rego`) are now excluded from the per-bundle policy list shown in expanded detail rows.
+- `registry/generate_index.py`: rule names in expanded detail rows are displayed without the `.rego` extension.
+
 ## 2026-10-07 — Scope OPA bundles and fix deployment spec
 
 ### Added
