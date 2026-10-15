@@ -30,7 +30,7 @@ import rego.v1
 
 # Services nobody is allowed to restart via this job template, on pain of
 # a stern memo about TPS reports.
-banned_services := {"tps_reporter"}
+banned_services := {"tps-reporter", "sshd"}
 
 # -----------------------------------------------------------------------------
 # VALIDATION RULES

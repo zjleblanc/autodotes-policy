@@ -71,9 +71,9 @@
             background: #121617;
             border-bottom: 1px solid #5b686b;
         }
-        .files tbody tr:nth-child(odd) { background: #1c2426; }
-        .files tbody tr:nth-child(even) { background: #2a3336; }
-        .files tbody tr:hover { background: #343e41; }
+        .files tbody tr:nth-child(odd):not(.detail-row) { background: #1c2426; }
+        .files tbody tr:nth-child(even):not(.detail-row) { background: #2a3336; }
+        .files tbody tr:hover:not(.detail-row) { background: #343e41; }
         .files .size,
         .files .modified {
             text-align: right;
@@ -110,6 +110,50 @@
         @media (max-width: 40rem) {
             .crumbs { font-size: 1.35rem; }
         }
+        /* --- expand/collapse toggle --- */
+        .toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #81949c;
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 0.25rem;
+            flex: none;
+            transition: color 0.15s;
+        }
+        .toggle-btn:hover,
+        .toggle-btn:focus-visible { color: #d4dbdd; outline: 1px solid #40494b; }
+        .chevron {
+            display: block;
+            transition: transform 0.2s ease;
+        }
+        .toggle-btn[aria-expanded="true"] .chevron {
+            transform: rotate(90deg);
+        }
+        /* --- detail (policies) row --- */
+        .detail-row { display: none; background: #111516; }
+        .detail-row td {
+            padding: 0.5rem 1rem 0.75rem 3.75rem;
+            border-top: 1px solid #2e383b;
+        }
+        .policy-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .policy-list li { font-size: 0.875rem; color: #bfbfbf; }
+        .policy-list strong {
+            color: #d4dbdd;
+            font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+            font-size: 0.82rem;
+        }
+        .policy-desc { color: #81949c; }
     </style>
 </head>
 <body>
@@ -143,6 +187,19 @@
                 day: "numeric",
                 hour: "numeric",
                 minute: "2-digit",
+            });
+        });
+
+        document.querySelectorAll(".toggle-btn").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const expanded = btn.getAttribute("aria-expanded") === "true";
+                const targetId = btn.getAttribute("aria-controls");
+                const detailRow = document.getElementById(targetId);
+                if (!detailRow) return;
+                const next = !expanded;
+                btn.setAttribute("aria-expanded", String(next));
+                detailRow.style.display = next ? "table-row" : "none";
             });
         });
     </script>

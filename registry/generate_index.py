@@ -20,7 +20,9 @@ Environment variables:
 """
 import html
 import os
+import re
 import shutil
+import tarfile
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -53,6 +55,80 @@ shutil.copyfile(ICON_PATH, site / ICON_PATH.name)
 download_icon = DOWNLOAD_ICON_PATH.read_text().strip()
 home_icon = HOME_ICON_PATH.read_text().strip()
 
+CHEVRON_SVG = (
+    '<svg class="chevron" viewBox="0 0 16 16" width="16" height="16" '
+    'fill="currentColor" aria-hidden="true">'
+    '<path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 '
+    '.708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>'
+    "</svg>"
+)
+
+
+def extract_description(content):
+    """Return the first OPA METADATA description annotation in rego content, or None."""
+    in_metadata = False
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped == "# METADATA":
+            in_metadata = True
+            continue
+        if in_metadata:
+            m = re.match(r"^# description:\s*(.+)$", stripped)
+            if m:
+                return m.group(1)
+            if not stripped.startswith("#"):
+                in_metadata = False
+    return None
+
+
+def extract_bundle_policies(bundle_path):
+    """Return [(filename, description_or_None)] for non-test .rego files in a bundle."""
+    policies = []
+    try:
+        with tarfile.open(bundle_path, "r:gz") as tf:
+            members = sorted(
+                (m for m in tf.getmembers()
+                 if m.name.endswith(".rego") and not m.name.endswith("_test.rego")),
+                key=lambda m: Path(m.name).name,
+            )
+            for member in members:
+                basename = Path(member.name).name
+                description = None
+                f = tf.extractfile(member)
+                if f:
+                    description = extract_description(f.read().decode("utf-8", errors="replace"))
+                policies.append((basename, description))
+    except Exception:
+        pass
+    return policies
+
+
+def detail_row_html(bundle_id, policies):
+    """Render a hidden <tr> listing the non-test policies for a bundle."""
+    if not policies:
+        return ""
+    detail_id = html.escape(f"details-{bundle_id}", quote=True)
+    items = []
+    for filename, description in policies:
+        esc_name = html.escape(filename)
+        if description:
+            esc_desc = html.escape(description)
+            items.append(
+                f'                        <li><strong>{esc_name}</strong>'
+                f' <span class="policy-desc">— {esc_desc}</span></li>'
+            )
+        else:
+            items.append(f'                        <li><strong>{esc_name}</strong></li>')
+    return "\n".join([
+        f'            <tr class="detail-row" id="{detail_id}">',
+        '                <td colspan="4">',
+        '                    <ul class="policy-list">',
+        "\n".join(items),
+        '                    </ul>',
+        '                </td>',
+        '            </tr>',
+    ])
+
 
 def crumb_body(label, home):
     if not home:
@@ -82,27 +158,38 @@ def crumbs_html(crumbs):
 def rows_html(entries, icon_href):
     icon_src = html.escape(icon_href, quote=True)
     blocks = []
-    for name, href, size, mtime in entries:
+    for name, href, size, mtime, policies in entries:
         modified = datetime.fromtimestamp(mtime, timezone.utc).isoformat().replace("+00:00", "Z")
-        blocks.append(
-            "\n".join(
-                [
-                    "            <tr>",
-                    "                <td>",
-                    '                    <span class="file">',
-                    f'                        <img class="opa" src="{icon_src}" alt="" width="32" height="32">',
-                    f'                        <a href="{html.escape(href, quote=True)}">{html.escape(name)}</a>',
-                    "                    </span>",
-                    "                </td>",
-                    f'                <td class="size">{size} bytes</td>',
-                    f'                <td class="modified"><time class="local" datetime="{modified}">{modified}</time></td>',
-                    "                <td class=\"download\">",
-                    f'                    <a href="{html.escape(href, quote=True)}" download="{html.escape(name, quote=True)}" aria-label="Download {html.escape(name, quote=True)}">{download_icon}</a>',
-                    "                </td>",
-                    "            </tr>",
-                ]
-            )
+        # Derive a stable ID from the bundle filename, e.g. "autodotes_policy"
+        bundle_id = name.replace(".bundle.tar.gz", "")
+        detail_id = html.escape(f"details-{bundle_id}", quote=True)
+        has_policies = bool(policies)
+        toggle = (
+            f'                        <button class="toggle-btn" '
+            f'aria-expanded="false" aria-controls="{detail_id}" '
+            f'aria-label="Show policies in {html.escape(name, quote=True)}">'
+            f"{CHEVRON_SVG}</button>"
+        ) if has_policies else ""
+        main_row = "\n".join(
+            [
+                "            <tr>",
+                "                <td>",
+                '                    <span class="file">',
+                toggle,
+                f'                        <img class="opa" src="{icon_src}" alt="" width="32" height="32">',
+                f'                        <a href="{html.escape(href, quote=True)}">{html.escape(name)}</a>',
+                "                    </span>",
+                "                </td>",
+                f'                <td class="size">{size} bytes</td>',
+                f'                <td class="modified"><time class="local" datetime="{modified}">{modified}</time></td>',
+                '                <td class="download">',
+                f'                    <a href="{html.escape(href, quote=True)}" download="{html.escape(name, quote=True)}" aria-label="Download {html.escape(name, quote=True)}">{download_icon}</a>',
+                "                </td>",
+                "            </tr>",
+            ]
         )
+        detail = detail_row_html(bundle_id, policies)
+        blocks.append(main_row + ("\n" + detail if detail else ""))
     return "\n".join(blocks)
 
 
@@ -119,8 +206,9 @@ bundle_entries = []
 root_entries = []
 for path in files:
     st = path.stat()
-    bundle_entries.append((path.name, path.name, st.st_size, st.st_mtime))
-    root_entries.append((path.name, f"bundles/{path.name}", st.st_size, st.st_mtime))
+    policies = extract_bundle_policies(path)
+    bundle_entries.append((path.name, path.name, st.st_size, st.st_mtime, policies))
+    root_entries.append((path.name, f"bundles/{path.name}", st.st_size, st.st_mtime, policies))
 
 (site / "index.html").write_text(
     render([(site_name, None), ("bundles", None)], root_entries, ICON_PATH.name) + "\n"
