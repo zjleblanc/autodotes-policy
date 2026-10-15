@@ -130,7 +130,7 @@
         "_host": "ao-vm-0106",
         "ritm_number": "RITM0000056",
         "ritm_sys_id": "061728394a5b6c7d8e9fa0b1c2d3e4f5",
-        "service_name": "tps_reporter"
+        "service_name": "tps-reporter"
       },
       "forks": 0,
       "hosts_count": 1,
