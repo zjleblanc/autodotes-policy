@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-21 — Add job failure notification policy and refactor shared validators
+
+### Added
+- `policies/autodotes_policy/job_failure_notification.rego`: a new policy ensuring job failure notifications carry valid email recipients, a required RITM ticket, and no forbidden HTML tags in the message body.
+- `policies/autodotes_policy/format_validators.rego`: shared validation logic for email addresses, HTML tags, and other generic string formats.
+- `.cursor/rules/policy-validator-functions.mdc`: a new project rule enforcing that shared validator functions live in `*_validators.rego` files rather than being defined inline.
+- `.cursor/skills/create-policy/SKILL.md`: a new Cursor skill for scaffolding new OPA policies following the project's directory structure and naming conventions.
+
+### Changed
+- `policies/autodotes_policy/ritm_helpers.rego` has been renamed to `ritm_validators.rego` to match the new naming convention for shared validator logic.
+- `policies/autodotes_policy/disk_expansion.rego` and `restart_service.rego` updated to reference the new `ritm_validators.rego` location.
+- `registry/generate_index.py`: the bundle registry now excludes `*_validators.rego` files (instead of `*_helpers.rego`) from the per-bundle policy list.
+
 ## 2026-10-15 — Refine bundle registry detail rows and add site link to README
 
 ### Added

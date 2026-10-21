@@ -11,7 +11,7 @@ import rego.v1
 #    a concrete new size (disk_target > 0) — a request with neither is a
 #    no-op that shouldn't bother anyone
 # 3. Ensuring the request is traceable to a valid ServiceNow RITM
-#    (see ritm_helpers.rego for the shared ritm_number/ritm_sys_id checks)
+#    (see ritm_validators.rego for the shared ritm_number/ritm_sys_id checks)
 #
 # Input structure expected:
 # {

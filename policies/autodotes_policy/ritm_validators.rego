@@ -3,7 +3,7 @@ package autodotes_policy
 import rego.v1
 
 # -----------------------------------------------------------------------------
-# Shared RITM (ServiceNow Requested Item) validation helpers
+# Shared RITM (ServiceNow Requested Item) validators
 #
 # Several job templates (disk_expansion, restart_service, ...) are launched
 # from a ServiceNow RITM and must carry enough breadcrumbs back to that ticket

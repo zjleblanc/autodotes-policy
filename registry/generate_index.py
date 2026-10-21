@@ -90,7 +90,7 @@ def extract_bundle_policies(bundle_path):
                 (m for m in tf.getmembers()
                  if m.name.endswith(".rego")
                  and not m.name.endswith("_test.rego")
-                 and not m.name.endswith("_helpers.rego")),
+                 and not m.name.endswith("_validators.rego")),
                 key=lambda m: Path(m.name).name,
             )
             for member in members:

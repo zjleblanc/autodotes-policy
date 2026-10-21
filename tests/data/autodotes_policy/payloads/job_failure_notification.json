@@ -1,0 +1,708 @@
+{
+  "job_failure_notification": {
+    "valid": {
+      "id": 601,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:00:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18975/output",
+        "notification_recipients": ["zleblanc@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the servicenow.itsm.incident_info Ansible module does not support a limit parameter. The task attempted to use limit: 5 to restrict the number of returned incidents, but this parameter is not valid for this module.",
+        "suggested_fix": "To resolve this issue, remove the limit: 5 line from the task. If limiting results is required, use the sysparm_query parameter with appropriate ServiceNow query syntax to filter results on the server side.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "valid_html": {
+      "id": 602,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:05:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18976/output",
+        "notification_recipients": ["zleblanc@redhat.com", "ops-team@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://gitlab.com/zjleblanc/ansible-eda-demos/-/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "<p>The failure occurred because the <code>servicenow.itsm.incident_info</code> module does not support a <b>limit</b> parameter.</p>",
+        "suggested_fix": "<p>Remove the <code>limit: 5</code> line from the task.</p><ul><li>Use sysparm_query instead</li></ul>",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "bad_job_link": {
+      "id": 603,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:10:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "ansible.autodotes.com/execution/jobs/playbook/18977/output",
+        "notification_recipients": ["zleblanc@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "bad_email": {
+      "id": 604,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:15:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18978/output",
+        "notification_recipients": ["not-an-email"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "empty_recipients": {
+      "id": 605,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:20:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18979/output",
+        "notification_recipients": [],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "bad_playbook_url": {
+      "id": 606,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:25:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18980/output",
+        "notification_recipients": ["zleblanc@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://bitbucket.org/zjleblanc/ansible-eda-demos/src/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "bad_task_path": {
+      "id": 607,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:30:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18981/output",
+        "notification_recipients": ["zleblanc@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    },
+    "unsafe_html": {
+      "id": 608,
+      "name": "Job Failure Notification",
+      "created": "2026-05-01T09:35:00.000000Z",
+      "created_by": {
+        "id": 4,
+        "username": "eda_bot",
+        "is_superuser": false,
+        "teams": []
+      },
+      "credentials": [],
+      "execution_environment": {
+        "id": 2,
+        "name": "Default execution environment",
+        "image": "registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel8@sha256:b9f60d9ebbbb5fdc394186574b95dea5763b045ceff253815afeb435c626914d",
+        "pull": ""
+      },
+      "extra_vars": {
+        "job_link": "https://ansible.autodotes.com/execution/jobs/playbook/18982/output",
+        "notification_recipients": ["zleblanc@redhat.com"],
+        "playbook_path": "playbooks/jt_failure_random.yml",
+        "playbook_url": "https://github.com/zjleblanc/ansible-eda-demos.git/blob/d0878a504a05fc4020f03de268bf5039c59255c9/playbooks/jt_failure_random.yml",
+        "root_cause": "<script>alert('xss')</script> The failure occurred because the limit parameter is invalid.",
+        "suggested_fix": "Remove the limit parameter.",
+        "task_path": "playbooks/tasks/failure_scenarios/snow_stale_incident.yml:2"
+      },
+      "forks": 0,
+      "hosts_count": 0,
+      "instance_group": {
+        "id": 2,
+        "name": "default",
+        "capacity": 100,
+        "jobs_running": 0,
+        "jobs_total": 10,
+        "max_concurrent_jobs": 0,
+        "max_forks": 0
+      },
+      "inventory": {
+        "id": 1,
+        "name": "EDA Demos Inventory",
+        "description": "",
+        "kind": "",
+        "total_hosts": 0,
+        "total_groups": 0,
+        "has_inventory_sources": false,
+        "total_inventory_sources": 0,
+        "has_active_failures": false,
+        "hosts_with_active_failures": 0,
+        "inventory_sources": []
+      },
+      "job_template": {
+        "id": 30,
+        "name": "Job Failure Notification",
+        "job_type": "run"
+      },
+      "job_type": "run",
+      "job_type_name": "job",
+      "labels": [],
+      "launch_type": "manual",
+      "limit": "",
+      "launched_by": {
+        "id": 4,
+        "name": "eda_bot",
+        "type": "user",
+        "url": "/api/v2/users/4/"
+      },
+      "organization": {
+        "id": 1,
+        "name": "Default"
+      },
+      "playbook": "notify_failure.yml",
+      "project": {
+        "id": 12,
+        "name": "EDA Demos",
+        "status": "successful",
+        "scm_type": "git",
+        "scm_url": "https://github.com/zjleblanc/ansible-eda-demos",
+        "scm_branch": "",
+        "scm_refspec": "",
+        "scm_clean": false,
+        "scm_track_submodules": false,
+        "scm_delete_on_update": false
+      },
+      "scm_branch": "",
+      "scm_revision": "",
+      "workflow_job": null,
+      "workflow_job_template": null
+    }
+  }
+}

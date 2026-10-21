@@ -10,7 +10,7 @@ import rego.v1
 # 2. Ensuring service_name is not on the banned-service list (looking at you,
 #    tps_reporter)
 # 3. Ensuring the request is traceable to a valid ServiceNow RITM
-#    (see ritm_helpers.rego for the shared ritm_number/ritm_sys_id checks)
+#    (see ritm_validators.rego for the shared ritm_number/ritm_sys_id checks)
 #
 # Input structure expected:
 # {

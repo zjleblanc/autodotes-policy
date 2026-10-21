@@ -1,0 +1,31 @@
+---
+description: Reusable Rego validator functions belong in dedicated *_validators.rego files, not inline in policy files
+globs: policies/**/*.rego
+alwaysApply: false
+---
+
+# Policy Validator Functions Belong in Validator Files
+
+Validator functions and shared configuration (regex patterns, allowed-value
+sets, `valid_*`/`contains_*` predicates, etc.) must live in a dedicated
+`<scope>_validators.rego` file in the same package — e.g.
+`policies/autodotes_policy/ritm_validators.rego` for RITM traceability
+checks, `policies/autodotes_policy/format_validators.rego` for generic
+string/URL/HTML format validators.
+
+- **Do not** define validator functions inline inside a policy's own
+  `<name>.rego` file. That file should contain only its
+  `<name>_violations` rules and the `<name>` entrypoint decision rule.
+- **Reuse** an existing validator file when its scope already covers the
+  new check (e.g. a new email-format check belongs in
+  `format_validators.rego`, not a new file).
+- **Only create a new `*_validators.rego` file** when no existing
+  validator file's scope fits — e.g. the first check needed for a
+  brand-new category of validation.
+- Name the file after what it validates, not after the policy that first
+  needed it (`format_validators.rego`, not
+  `job_failure_notification_validators.rego`).
+
+See [ritm_validators.rego](../../policies/autodotes_policy/ritm_validators.rego)
+and [format_validators.rego](../../policies/autodotes_policy/format_validators.rego)
+for reference.
