@@ -1,5 +1,6 @@
 package autodotes_policy
 
+import data.autodotes_policy.validators
 import rego.v1
 
 # =============================================================================
@@ -31,8 +32,11 @@ import rego.v1
 # =============================================================================
 #
 # Format validators (valid_email, valid_job_link, valid_playbook_url,
-# valid_task_path, contains_unsafe_html) live in format_validators.rego,
-# shared across this package.
+# valid_task_path, contains_unsafe_html) live in
+# validators/format_validators.rego, imported above as `validators`.
+
+# Extract extra_vars from input with safe fallback to empty object
+input_extra_vars := object.get(input, "extra_vars", {})
 
 # -----------------------------------------------------------------------------
 # VALIDATION RULES
@@ -41,7 +45,7 @@ import rego.v1
 # job_link: missing or without a protocol
 job_failure_notification_violations contains msg if {
 	link := object.get(input_extra_vars, "job_link", "")
-	not valid_job_link(link)
+	not validators.valid_job_link(link)
 	msg := $"🔗 job_link '{link}' must start with http:// or https://."
 }
 
@@ -56,7 +60,7 @@ job_failure_notification_violations contains msg if {
 job_failure_notification_violations contains msg if {
 	recipients := object.get(input_extra_vars, "notification_recipients", [])
 	some recipient in recipients
-	not valid_email(recipient)
+	not validators.valid_email(recipient)
 	msg := $"📧 '{recipient}' is not a valid email address."
 }
 
@@ -70,7 +74,7 @@ job_failure_notification_violations contains msg if {
 # playbook_url: missing or not a GitHub/GitLab link
 job_failure_notification_violations contains msg if {
 	url := object.get(input_extra_vars, "playbook_url", "")
-	not valid_playbook_url(url)
+	not validators.valid_playbook_url(url)
 	msg := $"🌐 playbook_url '{url}' must start with a github.com or gitlab host."
 }
 
@@ -85,7 +89,7 @@ job_failure_notification_violations contains msg if {
 job_failure_notification_violations contains msg if {
 	text := object.get(input_extra_vars, "root_cause", "")
 	text != ""
-	contains_unsafe_html(text)
+	validators.contains_unsafe_html(text)
 	msg := "🧨 root_cause contains unsafe HTML (script/iframe/object/embed tags or inline JS handlers)."
 }
 
@@ -100,14 +104,14 @@ job_failure_notification_violations contains msg if {
 job_failure_notification_violations contains msg if {
 	text := object.get(input_extra_vars, "suggested_fix", "")
 	text != ""
-	contains_unsafe_html(text)
+	validators.contains_unsafe_html(text)
 	msg := "🧨 suggested_fix contains unsafe HTML (script/iframe/object/embed tags or inline JS handlers)."
 }
 
 # task_path: missing or not "<file path>:<line number>"
 job_failure_notification_violations contains msg if {
 	path := object.get(input_extra_vars, "task_path", "")
-	not valid_task_path(path)
+	not validators.valid_task_path(path)
 	msg := $"📍 task_path '{path}' must be a file path followed by ':<line number>' (e.g. tasks/main.yml:12)."
 }
 

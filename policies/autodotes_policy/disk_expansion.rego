@@ -1,5 +1,6 @@
 package autodotes_policy
 
+import data.autodotes_policy.validators
 import rego.v1
 
 # =============================================================================
@@ -11,7 +12,8 @@ import rego.v1
 #    a concrete new size (disk_target > 0) — a request with neither is a
 #    no-op that shouldn't bother anyone
 # 3. Ensuring the request is traceable to a valid ServiceNow RITM
-#    (see ritm_validators.rego for the shared ritm_number/ritm_sys_id checks)
+#    (see validators/ritm_validators.rego for the shared ritm_number/ritm_sys_id
+#    checks, imported above as `validators`)
 #
 # Input structure expected:
 # {
@@ -33,6 +35,9 @@ import rego.v1
 
 # Define the units of measurement we know how to grow a disk by
 allowed_disk_units := {"MB", "GB", "TB"}
+
+# Extract extra_vars from input with safe fallback to empty object
+input_extra_vars := object.get(input, "extra_vars", {})
 
 # -----------------------------------------------------------------------------
 # VALIDATION RULES
@@ -61,7 +66,7 @@ disk_expansion_violations contains msg if {
 
 # Fold in the shared RITM traceability checks
 disk_expansion_violations contains msg if {
-	some msg in ritm_violations
+	some msg in validators.ritm_violations
 }
 
 # -----------------------------------------------------------------------------

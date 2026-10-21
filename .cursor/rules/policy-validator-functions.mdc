@@ -1,16 +1,17 @@
 ---
-description: Reusable Rego validator functions belong in dedicated *_validators.rego files, not inline in policy files
+description: Reusable Rego validator functions belong in dedicated validators/*_validators.rego files under a <package>.validators sub-namespace, not inline in policy files
 globs: policies/**/*.rego
 alwaysApply: false
 ---
 
-# Policy Validator Functions Belong in Validator Files
+# Policy Validator Functions Belong in `validators/*_validators.rego`
 
 Validator functions and shared configuration (regex patterns, allowed-value
 sets, `valid_*`/`contains_*` predicates, etc.) must live in a dedicated
-`<scope>_validators.rego` file in the same package — e.g.
-`policies/autodotes_policy/ritm_validators.rego` for RITM traceability
-checks, `policies/autodotes_policy/format_validators.rego` for generic
+`<scope>_validators.rego` file under the package's `validators/`
+subdirectory — e.g. `policies/autodotes_policy/validators/ritm_validators.rego`
+for RITM traceability checks,
+`policies/autodotes_policy/validators/format_validators.rego` for generic
 string/URL/HTML format validators.
 
 - **Do not** define validator functions inline inside a policy's own
@@ -26,6 +27,30 @@ string/URL/HTML format validators.
   needed it (`format_validators.rego`, not
   `job_failure_notification_validators.rego`).
 
-See [ritm_validators.rego](../../policies/autodotes_policy/ritm_validators.rego)
-and [format_validators.rego](../../policies/autodotes_policy/format_validators.rego)
-for reference.
+## Package and import rules
+
+Every file under `validators/` declares a package one level deeper than its
+parent policy package: `package <package>.validators` (e.g.
+`package autodotes_policy.validators`). This is a sub-namespace, not the
+same package as the policies — it is **not** automatically visible to
+policy files.
+
+- A policy file that needs a validator must explicitly
+  `import data.<package>.validators` and reference functions/rules with the
+  `validators.` prefix (e.g. `validators.ritm_violations`,
+  `validators.valid_email(addr)`).
+- **Only import `validators` in policy files that actually call into it.**
+  Policies with no shared-validator dependency (e.g. one with entirely
+  self-contained checks) must not add the import.
+- Helpers like `input_extra_vars := object.get(input, "extra_vars", {})`
+  are not validators — define them locally in each policy file that needs
+  them (duplicating this one-liner across policy files in the same package
+  is fine and expected; do not pull it in in via the `validators` import).
+
+See
+[validators/ritm_validators.rego](../../policies/autodotes_policy/validators/ritm_validators.rego)
+and
+[validators/format_validators.rego](../../policies/autodotes_policy/validators/format_validators.rego)
+for the validator-side convention, and
+[job_failure_notification.rego](../../policies/autodotes_policy/job_failure_notification.rego)
+for an example of a policy importing and using them.

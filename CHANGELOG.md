@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-21 — Refactor policy package structure into validators and tests subdirectories
+
+### Changed
+- Policy package layout refactored: moved validator logic to a `validators/` subdirectory and unit test logic to a `tests/` subdirectory within each bundle directory.
+- Shared validators now reside in a `<package>.validators` sub-namespace (e.g., `autodotes_policy.validators`), requiring explicit imports in policy files.
+- `.github/workflows/bundle.yaml`: updated `opa build` to explicitly ignore the new `tests/` subdirectories.
+- `.cursor/rules/policy-validator-functions.mdc` and `.cursor/skills/create-policy/SKILL.md` updated to enforce and scaffold the new directory layout and import pattern.
+- `README.md` and `tests/README.md` updated to reflect the new project structure.
+- `.regal/config.yaml`: disabled `directory-package-mismatch` to support the `tests/` subdirectory convention.
+- All Rego files auto-formatted with `opa fmt`.
+
 ## 2026-10-21 — Add job failure notification policy and refactor shared validators
 
 ### Added

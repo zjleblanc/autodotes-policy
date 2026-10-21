@@ -68,12 +68,27 @@ flowchart LR
 autodotes-policy/
 ├── policies/                          # All Rego policy source files
 │   └── autodotes_policy/              # One folder = one OPA bundle
+│       ├── .manifest                  # Scopes the bundle's data roots to autodotes_policy
 │       ├── deny.rego                  # Default-deny catch-all rule
-│       ├── deny_test.rego             # Unit tests for deny.rego
 │       ├── demo_database_maintenance.rego
-│       ├── demo_database_maintenance_test.rego
+│       ├── disk_expansion.rego
+│       ├── job_failure_notification.rego
+│       ├── restart_service.rego
 │       ├── tf_web_deploy.rego
-│       └── tf_web_deploy_test.rego
+│       │
+│       ├── validators/                # Shared validator functions, package <pkg>.validators
+│       │   ├── format_validators.rego # Generic string/URL/HTML format checks
+│       │   └── ritm_validators.rego   # ServiceNow RITM traceability checks
+│       │                              # (only imported — `import data.autodotes_policy.validators`
+│       │                              #  — by the policy files that actually use them)
+│       │
+│       └── tests/                     # Unit test logic (*_test.rego), one per policy
+│           ├── deny_test.rego
+│           ├── demo_database_maintenance_test.rego
+│           ├── disk_expansion_test.rego
+│           ├── job_failure_notification_test.rego
+│           ├── restart_service_test.rego
+│           └── tf_web_deploy_test.rego
 │
 │   └── system/                        # Server-level policies (not bundles)
 │       └── authz.rego                 # system.authz policy enforced by the OPA server itself

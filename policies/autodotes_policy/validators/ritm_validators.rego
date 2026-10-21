@@ -1,4 +1,4 @@
-package autodotes_policy
+package autodotes_policy.validators
 
 import rego.v1
 
@@ -11,10 +11,13 @@ import rego.v1
 # cares about "was this launched from a real ticket?" asks the same question
 # the same way.
 #
-# Usage from another policy in this package:
+# This file lives in the `autodotes_policy.validators` sub-namespace and is
+# only imported by policies that actually use it:
+#
+#   import data.autodotes_policy.validators
 #
 #   some_policy_violations contains msg if {
-#       some msg in ritm_violations
+#       some msg in validators.ritm_violations
 #   }
 # -----------------------------------------------------------------------------
 

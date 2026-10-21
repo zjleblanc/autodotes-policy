@@ -39,34 +39,48 @@ If not already clear from the user's request, confirm:
 
 ## Step 3: Scaffold a new package (only if created in Step 1)
 
-1. Create the directory `policies/<package>/`.
+1. Create the directory `policies/<package>/`, plus its `validators/` and
+   `tests/` subdirectories (`policies/<package>/validators/`,
+   `policies/<package>/tests/`).
 2. Add `policies/<package>/.manifest`:
    ```json
    {
      "roots": ["<package>"]
    }
    ```
-   (Required per [policy-bundle-manifest.mdc](../rules/policy-bundle-manifest.mdc) — every subdirectory under `policies/` must scope its bundle roots or `opa build` defaults to claiming the entire data document.)
-3. Create `tests/data/<package>/payloads/` (the directory that will hold payload JSON files).
+   (Required per [policy-bundle-manifest.mdc](../rules/policy-bundle-manifest.mdc) — every subdirectory under `policies/` must scope its bundle roots or `opa build` defaults to claiming the entire data document. `"roots": ["<package>"]` also covers the `<package>.validators` sub-namespace, so no separate manifest entry is needed for it.)
+3. Create `tests/data/<package>/payloads/` (the top-level repo `tests/`
+   directory that holds example payload JSON — distinct from the
+   `policies/<package>/tests/` directory created in step 1, which holds
+   `_test.rego` logic).
 
 ## Step 4: Check for reusable validators first
 
 Per [policy-validator-functions.mdc](../rules/policy-validator-functions.mdc),
 validator functions and shared config (regex patterns, `valid_*`/`contains_*`
-predicates, allowed-value sets) must live in dedicated `*_validators.rego`
-files, never inline in a policy's own `<name>.rego`.
+predicates, allowed-value sets) must live in dedicated
+`policies/<package>/validators/*_validators.rego` files, under a
+`<package>.validators` sub-namespace — never inline in a policy's own
+`<name>.rego`.
 
-1. List existing validator files: `ls policies/<package>/*_validators.rego`.
+1. List existing validator files: `ls policies/<package>/validators/*_validators.rego`.
 2. For each check the new policy needs, see if an existing validator file's
    scope already fits (e.g. a URL/email/HTML format check belongs in a
    generic `format_validators.rego`; a RITM traceability check belongs in
    `ritm_validators.rego`). Add the new validator there.
 3. Only create a new `<scope>_validators.rego` file when no existing file's
    scope fits. Name it after what it validates, not after the policy that
-   first needed it.
-4. Check whether `input_extra_vars` is already defined anywhere in the
-   package: `rg "input_extra_vars :=" policies/<package>/*.rego`. Only
-   define it (in a validator file, not the policy file) if it's missing.
+   first needed it. It must declare `package <package>.validators`.
+4. If the new policy ends up using any validator, it must
+   `import data.<package>.validators` and reference the function/rule with
+   the `validators.` prefix (e.g. `validators.ritm_violations`). Only add
+   this import to policy files that actually call into `validators` —
+   skip it entirely if the new policy's checks are self-contained.
+5. `input_extra_vars` is not a validator — it's a local one-liner
+   (`input_extra_vars := object.get(input, "extra_vars", {})`) that each
+   policy file defines for itself. Check whether the new policy needs it,
+   and if so add it directly in Step 5's policy file rather than pulling it
+   in via `validators`.
 
 ## Step 5: Write the policy file
 
@@ -78,6 +92,8 @@ rule — no validator function definitions (those went in Step 4).
 package <package>
 
 import rego.v1
+# Only add this import if Step 4 found a validator this policy actually uses:
+import data.<package>.validators
 
 # =============================================================================
 # <POLICY TITLE> POLICY
@@ -94,6 +110,9 @@ import rego.v1
 # }
 # =============================================================================
 
+# Extract extra_vars from input with safe fallback to empty object
+input_extra_vars := object.get(input, "extra_vars", {})
+
 # -----------------------------------------------------------------------------
 # VALIDATION RULES
 # -----------------------------------------------------------------------------
@@ -103,6 +122,13 @@ import rego.v1
 	val == ""
 	msg := "<emoji> <field> is missing."
 }
+
+# If this policy folds in a shared validator's checks, reference it with the
+# `validators.` prefix, e.g.:
+#
+# <policy_name>_violations contains msg if {
+# 	some msg in validators.ritm_violations
+# }
 
 # -----------------------------------------------------------------------------
 # POLICY DECISION
@@ -138,7 +164,9 @@ Rules of this codebase's style:
 
 ## Step 6: Write the test file
 
-Create `policies/<package>/<policy_name>_test.rego`:
+Create `policies/<package>/tests/<policy_name>_test.rego` (test logic lives
+in the package's `tests/` subdirectory; it still declares `package
+<package>_test`, since package names are independent of file location):
 
 ```rego
 package <package>_test

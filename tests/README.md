@@ -1,12 +1,18 @@
 # Testing
 
 This directory holds **example payloads** used by the OPA unit tests that live
-alongside each policy under [`policies/autodotes_policy/`](../policies/autodotes_policy/).
+in the `tests/` subdirectory of each policy package, e.g.
+[`policies/autodotes_policy/tests/`](../policies/autodotes_policy/tests/).
 
-- Test *logic* (`*_test.rego`) stays next to the policy it tests, following
-  [OPA's own convention](https://www.openpolicyagent.org/docs/latest/policy-testing/).
-- Test *data* (example payloads) lives here, under `tests/data/`, so it never
-  gets packaged into a production bundle by `opa build`.
+- Test *logic* (`*_test.rego`) lives in a `tests/` subdirectory of its
+  package root (`policies/<package>/tests/`), following
+  [OPA's own convention](https://www.openpolicyagent.org/docs/latest/policy-testing/)
+  of keeping test files close to the code they test, while still being
+  excluded from the published bundle (see [CI and pre-commit integration](#ci-and-pre-commit-integration)
+  below).
+- Test *data* (example payloads) lives here, under this repo's top-level
+  `tests/data/`, so it never gets packaged into a production bundle by
+  `opa build`.
 
 ## Directory layout
 
@@ -96,7 +102,7 @@ CLI on your `PATH`. No other tooling is required to run tests locally.
    top-level scenario key with a full AAP-shaped payload, tailoring
    `extra_vars` to exercise the behavior you want to test.
 
-2. **Write the assertion.** In the matching `policies/autodotes_policy/<policy>_test.rego`
+2. **Write the assertion.** In the matching `policies/autodotes_policy/tests/<policy>_test.rego`
    file, add a `test_<description>` rule. Each test package follows the
    `_test` suffix convention expected by Regal and the wider Rego community:
 
@@ -147,5 +153,7 @@ CLI on your `PATH`. No other tooling is required to run tests locally.
 
 Either way, `_test.rego` files and everything under `tests/data/` are
 excluded from production bundles — `opa build` is invoked with
-`--ignore '*_test.rego'`, and `tests/data/` lives outside `policies/` so it's
-never part of the build input in the first place.
+`--ignore '*_test.rego' --ignore 'tests'` (covering both the suffix and the
+whole `policies/<package>/tests/` subdirectory), and `tests/data/` lives
+outside `policies/` so it's never part of the build input in the first
+place.

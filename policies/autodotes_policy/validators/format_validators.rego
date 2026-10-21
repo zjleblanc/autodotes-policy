@@ -1,4 +1,4 @@
-package autodotes_policy
+package autodotes_policy.validators
 
 import rego.v1
 
@@ -10,11 +10,14 @@ import rego.v1
 # (e.g. RITM traceability) belong in their own `*_validators.rego` file
 # instead (see ritm_validators.rego).
 #
-# Usage from another policy in this package:
+# This file lives in the `autodotes_policy.validators` sub-namespace and is
+# only imported by policies that actually use it:
+#
+#   import data.autodotes_policy.validators
 #
 #   some_policy_violations contains msg if {
 #       addr := object.get(input_extra_vars, "email", "")
-#       not valid_email(addr)
+#       not validators.valid_email(addr)
 #       msg := $"📧 '{addr}' is not a valid email address."
 #   }
 # -----------------------------------------------------------------------------
