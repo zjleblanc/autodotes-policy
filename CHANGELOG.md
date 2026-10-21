@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-10-21 — Fix Regal linting errors for test subdirectories
+
+### Changed
+- `.regal/config.yaml`: configured `directory-package-mismatch` to ignore `**/tests/*.rego` files. This allows the `_test` package suffix to exist in a `tests/` subdirectory without triggering lint violations, while maintaining enforcement for root-level and validator packages.
+
+## 2026-10-21 — Implement Rego minification in bundle workflow
+
+### Added
+- `scripts/minify_rego.sh`: a new shell script that strips comments, blank lines, and trailing whitespace from Rego files while preserving semantically significant OPA `# METADATA` blocks.
+
+### Changed
+- `.github/workflows/bundle.yaml`: added a minification step that runs before bundling, reducing bundle sizes by ~50% (measured 20KB down to 9KB for `autodotes_policy`).
+- `.github/workflows/bundle.yaml`: added a structural validation step (`opa check --strict`) to ensure minification does not break Rego syntax.
+
 ## 2026-10-21 — Refactor policy package structure into validators and tests subdirectories
 
 ### Changed

@@ -21,6 +21,12 @@
 #             - package
 
 rules:
+  idiomatic:
+    directory-package-mismatch:
+      level: error
+      ignore:
+        files:
+          - "**/tests/*.rego"
   imports:
     unresolved-reference:
       # `payloads` is example-payload data loaded from tests/data/ for unit
