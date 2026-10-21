@@ -48,6 +48,19 @@ jobs:
       - name: Run unit tests (opa test)
         run: opa test policies/ tests/data/ -v
 
+      - name: Minify Rego policies for bundle
+        run: |
+          find policies/ -path '*/tests' -prune -o -name '*.rego' -print \
+            | xargs bash scripts/minify_rego.sh
+
+      - name: Validate minified Rego (opa check --strict)
+        # opa fmt is intentionally not used here: its canonical style requires
+        # blank lines after package/import and between top-level rules, which
+        # minification removes by design, so opa fmt --fail --list would
+        # always report a diff on minified output even when it is structurally
+        # valid. opa check --strict is the correct structural validator here.
+        run: opa check --strict policies/
+
       - name: Detect changed policy directories
         id: changes
         run: |
