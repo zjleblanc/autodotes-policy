@@ -29,7 +29,7 @@ sequenceDiagram
 
     Vault->>ESO: RSA public key (secret/data/autodotes/opa)
     ESO->>OPA: Secret opa-config (config.yaml with keys.aap.key)
-    Note over Vault: RSA private key stays in Vault;<br/>used only to sign JWTs for AAP
+    Note over Vault: RSA private key stays in Vault<br/>used only to sign JWTs for AAP
     AAP->>OPA: POST /v1/data/autodotes_policy/...<br/>Authorization: Bearer [JWT]
     OPA->>OPA: --authentication=token verifies<br/>JWT signature (RS256 public key)
     OPA->>OPA: --authorization=basic evaluates<br/>system.authz (k8s/base/rego/system/authz.rego)
