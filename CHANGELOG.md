@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-31 — Fix false positive in unsafe HTML validator
+
+### Fixed
+- `policies/autodotes_policy/validators/format_validators.rego`: added a word boundary (`\b`) to the `on[a-zA-Z]+\s*=` pattern to prevent false positives for strings like `month=` or `salon=` while still catching actual inline JS event handlers like `onclick=` or `onerror=`.
+
+### Added
+- `policies/autodotes_policy/tests/job_failure_notification_test.rego`: regression test case `test_job_failure_notification_allows_safe_html_with_on_substring`.
+- `tests/data/autodotes_policy/payloads/job_failure_notification.json`: new `safe_html_with_on_substring` payload containing `month=` to verify the fix.
+
 ## 2026-10-21 — Fix Regal linting errors for test subdirectories
 
 ### Changed

@@ -26,6 +26,13 @@ test_job_failure_notification_allows_valid_html if {
 	count(result.violations) == 0
 }
 
+test_job_failure_notification_allows_safe_html_with_on_substring if {
+	payload := autodotes_policy.payloads.job_failure_notification.safe_html_with_on_substring
+	result := autodotes_policy.job_failure_notification with input as payload
+	result.allowed == true
+	count(result.violations) == 0
+}
+
 test_job_failure_notification_denies_bad_job_link if {
 	payload := autodotes_policy.payloads.job_failure_notification.bad_job_link
 	result := autodotes_policy.job_failure_notification with input as payload

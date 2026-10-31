@@ -30,7 +30,7 @@ unsafe_html_patterns := [
 	`<object`,
 	`<embed`,
 	`javascript:`,
-	`on[a-zA-Z]+\s*=`,
+	`\bon[a-zA-Z]+\s*=`,
 ]
 
 valid_email(email) if {
