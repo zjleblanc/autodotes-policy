@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-03 — Verify JWT audience in OPA authz
+
+### Changed
+- `k8s/base/rego/system/authz.rego`: authenticated routes now require a valid bearer JWT with audience `opa.autodotes.com` via a shared `authn` helper (`io.jwt.decode_verify`), instead of only checking that `input.identity` is set.
+- `k8s/base/config.yaml` renamed to `config.example.yaml` so local/deploy config is not committed as a tracked secret source.
+
 ## 2026-10-31 — Fix false positive in unsafe HTML validator
 
 ### Fixed
