@@ -29,9 +29,9 @@ rules:
           - "**/tests/*.rego"
   imports:
     unresolved-reference:
-      # `payloads` is example-payload data loaded from tests/data/ for unit
-      # tests (see policies/autodotes_policy/*_test.rego). Regal only lints
-      # the policies/ directory and does not scan data files, so references
-      # to this path are expected to be "unresolved" from its point of view.
+      # Runtime/test data not present as files under the linted trees:
+      # - payloads: loaded from tests/data/ for unit tests
+      # - jwt_cert: injected via opa-config Secret data.json at deploy time
       except-paths:
         - data.autodotes_policy.payloads.**
+        - data.system.jwt_cert

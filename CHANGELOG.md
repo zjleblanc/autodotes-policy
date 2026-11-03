@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-03 — Verify inbound JWTs with mounted public key
+
+### Changed
+- `k8s/base/external-secret.yaml`: removed unused config `keys:` block; the Vault public key is now rendered as `data.json` (`data.system.jwt_cert`) via `dict | toJson` for Rego JWT verification.
+- `k8s/base/deployment.yaml`: projects `opa-authz` ConfigMap plus `opa-config` `data.json` into `/etc/opa/authz`, loads that directory, and mounts only `config.yaml` from the Secret for OPA config.
+- `k8s/base/rego/system/authz.rego`: `authn` now passes `data.system.jwt_cert` as `cert` to `io.jwt.decode_verify` so signature and audience are both checked.
+- `k8s/base/config.example.yaml`: dropped the misleading `keys:` example; documented that the JWT cert lives in Secret `data.json`, not OPA config.
+- `.regal/config.yaml`: excepted `data.system.jwt_cert` from `unresolved-reference` (injected at deploy time).
+
 ## 2026-11-03 — Verify JWT audience in OPA authz
 
 ### Changed

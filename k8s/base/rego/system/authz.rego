@@ -6,19 +6,20 @@ import rego.v1
 # OPA server authorization policy.
 #
 # Evaluated by OPA on every API request when --authorization=basic is set.
-# input.identity is populated only when --authentication=token has already
-# verified the caller's bearer token (RS256 JWT, see external-secret.yaml);
-# unauthenticated requests never reach this policy with a truthy identity.
+# --authentication=token only extracts the Bearer token into input.identity;
+# this policy verifies the RS256 signature (data.system.jwt_cert from the
+# opa-config Secret) and required claims before allowing access.
 #
 # /health is always allowed by OPA regardless of these settings, so
 # Kubernetes liveness/readiness probes are unaffected.
 # -----------------------------------------------------------------------------
 
-# Verify the caller's bearer JWT (audience must match OPA's expected aud).
+# Verify the caller's bearer JWT (signature + audience).
 authn if {
-	jwt := input.identity
-	constraints := {"aud": "opa.autodotes.com"}
-	[valid, _, _] := io.jwt.decode_verify(jwt, constraints)
+	[valid, _, _] := io.jwt.decode_verify(input.identity, {
+		"cert": data.system.jwt_cert,
+		"aud": "opa.autodotes.com",
+	})
 	valid == true
 }
 

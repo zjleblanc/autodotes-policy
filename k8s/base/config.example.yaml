@@ -1,4 +1,7 @@
-# Not deployed - for reference only
+# Not deployed - for reference only.
+# The live config is rendered by external-secret.yaml (config.yaml key).
+# The JWT public key is rendered into the same Secret as data.json and
+# mounted into /etc/opa/authz for io.jwt.decode_verify — not into config.
 services:
   github-pages:
     url: https://zjleblanc.github.io/autodotes-policy
@@ -10,9 +13,3 @@ bundles:
     polling:
       min_delay_seconds: 30
       max_delay_seconds: 60
-
-# External Secret
-keys:
-  aap:
-    key: "{{ .rsa_public_key }}"
-    algorithm: RS256
