@@ -23,6 +23,7 @@ spec:
             - "--server"
             - "--addr"
             - ":8443"
+            - "--log-level=debug"
             - "--tls-cert-file"
             - "/certs/tls.crt"
             - "--tls-private-key-file"
