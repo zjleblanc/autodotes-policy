@@ -14,6 +14,14 @@ import rego.v1
 # Kubernetes liveness/readiness probes are unaffected.
 # -----------------------------------------------------------------------------
 
+# Verify the caller's bearer JWT (audience must match OPA's expected aud).
+authn if {
+	jwt := input.identity
+	constraints := {"audience": "opa.autodotes.com"}
+	[valid, _, _] := io.jwt.decode_verify(jwt, constraints)
+	valid == true
+}
+
 default authz := {"allow": false}
 
 # Allow health checks without authentication.
@@ -25,7 +33,7 @@ authz := {"allow": true} if {
 # Allow policy evaluation calls (POST /v1/data/...) for authenticated callers.
 # This is the only endpoint integrations need to query policy decisions.
 authz := {"allow": true} if {
-	input.identity
+	authn
 	input.method == "POST"
 	input.path[0] == "v1"
 	count(input.path) >= 2
@@ -35,7 +43,7 @@ authz := {"allow": true} if {
 # Allow bundle/policy status checks (GET /v1/status) for authenticated
 # monitoring clients.
 authz := {"allow": true} if {
-	input.identity
+	authn
 	input.method == "GET"
 	input.path == ["v1", "status"]
 }
