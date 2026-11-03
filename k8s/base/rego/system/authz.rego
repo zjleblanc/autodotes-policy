@@ -17,7 +17,7 @@ import rego.v1
 # Verify the caller's bearer JWT (audience must match OPA's expected aud).
 authn if {
 	jwt := input.identity
-	constraints := {"audience": "opa.autodotes.com"}
+	constraints := {"aud": "opa.autodotes.com"}
 	[valid, _, _] := io.jwt.decode_verify(jwt, constraints)
 	valid == true
 }
