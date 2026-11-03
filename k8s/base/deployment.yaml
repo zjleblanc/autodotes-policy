@@ -31,7 +31,11 @@ spec:
             - "/etc/opa/config.yaml"
             - "--authentication=token"
             - "--authorization=basic"
-            - "/etc/opa/authz"
+            # Pass files explicitly — loading the directory also picks up
+            # Kubernetes projected-volume ..data / ..timestamp copies and
+            # fails with "multiple default rules data.system.authz".
+            - "/etc/opa/authz/authz.rego"
+            - "/etc/opa/authz/data.json"
           ports:
             - name: https
               containerPort: 8443
