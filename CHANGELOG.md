@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-04 — Document JWT verification in system.authz
+
+### Changed
+- `docs/opa-authentication.md`: `--authentication=token` only copies the raw bearer token into `input.identity`. Signature and audience checks happen in `system.authz` with `io.jwt.decode_verify` and `data.system.jwt_cert`. Vault path, 401 denials, and key rotation now follow the mounted `data.json` instead of a config `keys:` block.
+- `k8s/base/config.example.yaml`: points at the example data document for the JWT cert shape.
+
+### Added
+- `k8s/base/rego/system/data.example.json`: example `{"system":{"jwt_cert":...}}` document. Not wired into kustomization or the deployment.
+
 ## 2026-11-03 — Verify inbound JWTs with mounted public key
 
 ### Changed

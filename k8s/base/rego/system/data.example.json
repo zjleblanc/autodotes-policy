@@ -1,0 +1,5 @@
+{
+  "system": {
+    "jwt_cert": "-----BEGIN PUBLIC KEY-----\nMIIB...\n-----END PUBLIC KEY-----\n"
+  }
+}
